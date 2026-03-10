@@ -1,0 +1,403 @@
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Reverie Design System - Studio Ghibli Inspired Atmospheres */
+  /* Warm, nostalgic, soft, natural, and dreamy */
+  
+  /* === Refined Ghibli Palette - Warm Spring Evening === */
+  
+  /* Sky & Atmosphere - Gentle, Peaceful Spring Sunset */
+  --ghibli-sky-whisper: #F0F7FC;         /* Softest evening sky */
+  --ghibli-sky-gentle: #D4E8F7;          /* Gentle sunset sky */
+  --ghibli-sky-warm: #B8DDFF;            /* Warm twilight sky */
+  --ghibli-sky-deep: #9ACFED;            /* Deeper peaceful sky */
+  
+  /* Meadow & Nature - Fresh Spring Growth */
+  --ghibli-meadow-mist: #F0F8F0;         /* Morning meadow mist */
+  --ghibli-meadow-soft: #D8EEDB;         /* Soft grass pastel */
+  --ghibli-meadow-fresh: #B5E3B8;        /* Fresh spring pastel green */
+  --ghibli-meadow-rich: #95D199;         /* Rich meadow pastel */
+  --ghibli-forest-gentle: #7BB580;       /* Gentle forest pastel */
+  
+  /* Sunlight & Warmth - Golden Sunset Glow */
+  --ghibli-sun-whisper: #FFFEFB;         /* Softest sunset glow */
+  --ghibli-sun-cream: #FFFBEF;           /* Creamy warm light */
+  --ghibli-sun-gentle: #FFF6D6;          /* Gentle sunlight pastel */
+  --ghibli-sun-warm: #FFEEAD;            /* Warm golden hour pastel */
+  --ghibli-sun-gold: #FFE385;            /* Rich golden glow pastel */
+  
+  /* Earth & Natural Tones - Grounding, Comforting Creams */
+  --ghibli-cream: #FFFEFB;               /* Soft cream background */
+  --ghibli-sand-light: #FAF5EB;          /* Light warm sand */
+  --ghibli-sand: #F0E8D8;                /* Warm sand pastel */
+  --ghibli-wood-light: #E8DCCA;          /* Light warm wood */
+  --ghibli-wood: #D6C8B3;                /* Warm wood tone pastel */
+  
+  /* Soft Accents - Gentle Sunset Tones */
+  --ghibli-peach-whisper: #FFF0E5;       /* Softest peach */
+  --ghibli-peach: #FFE0CC;               /* Warm peach pastel */
+  --ghibli-lavender-soft: #F0ECF8;       /* Soft lavender mist */
+  --ghibli-rose-soft: #FFEDF2;           /* Soft rose blush */
+  
+  /* === Atmospheric Backgrounds === */
+  --bg-primary: #FFFEFB;                 /* Main cream background */
+  --bg-secondary: #FAF5EB;               /* Secondary warm background */
+  --bg-elevated: rgba(255, 255, 255, 0.95); /* Elevated surface */
+  --bg-glass: rgba(255, 254, 251, 0.8);  /* Glass effect */
+  --bg-mist: rgba(255, 251, 239, 0.5);   /* Gentle mist overlay */
+  
+  /* === Text Hierarchy - Soft Warm Tones (No Dark Colors) === */
+  --text-primary: #5A7B65;               /* Soft meadow green - main text */
+  --text-secondary: #7B9B85;             /* Medium meadow - secondary */
+  --text-tertiary: #9BB5A5;              /* Gentle green - tertiary */
+  --text-caption: #B8CEC0;               /* Light green - captions */
+  --text-disabled: rgba(90, 123, 101, 0.35); /* Disabled state */
+  
+  /* === Semantic Colors - Warm Sunset Pastels === */
+  --color-calm: #B8DDFF;                 /* Calm sky blue pastel */
+  --color-balance: #B5E3B8;              /* Balanced meadow green pastel */
+  --color-warmth: #FFEEAD;               /* Warm sunlight pastel */
+  --color-comfort: #F0F8F0;              /* Comforting mist */
+  --color-peaceful: #D4E8F7;             /* Peaceful sky pastel */
+  
+  /* === Refined Shadow & Glow System === */
+  /* Softer, more natural sunset shadows */
+  --shadow-whisper: 0 1px 8px rgba(90, 123, 101, 0.04);
+  --shadow-soft: 0 2px 16px rgba(90, 123, 101, 0.06);
+  --shadow-medium: 0 4px 24px rgba(90, 123, 101, 0.08);
+  --shadow-strong: 0 8px 40px rgba(90, 123, 101, 0.10);
+  
+  /* Atmospheric glows - warm sunset glow */
+  --glow-sunlight: 0 8px 40px rgba(255, 238, 173, 0.4);
+  --glow-sky: 0 8px 32px rgba(184, 221, 255, 0.35);
+  --glow-meadow: 0 8px 32px rgba(181, 227, 184, 0.35);
+  --glow-warm: 0 12px 48px rgba(255, 246, 214, 0.45);
+  --glow-peaceful: 0 0 60px rgba(212, 232, 247, 0.5);
+  
+  /* === Spring Sunset Gradient System === */
+  --gradient-morning: linear-gradient(135deg, #F0F7FC 0%, #FFFEFB 50%, #FFFBEF 100%);
+  --gradient-sky: linear-gradient(180deg, #D4E8F7 0%, #F0F7FC 40%, #FFFEFB 100%);
+  --gradient-meadow: linear-gradient(135deg, #F0F8F0 0%, #D8EEDB 30%, #FFFEFB 100%);
+  --gradient-golden: radial-gradient(circle at 50% 30%, #FFFBEF 0%, #FFEEAD 20%, #FFFEFB 70%);
+  --gradient-sunset: linear-gradient(135deg, #FFF0E5 0%, #FFEEAD 40%, #D4E8F7 100%);
+  --gradient-comfort: linear-gradient(135deg, #F0F7FC 0%, #F0F8F0 30%, #FFFBEF 70%, #FFFEFB 100%);
+  --gradient-warm-glow: radial-gradient(circle at center, rgba(255, 238, 173, 0.25) 0%, transparent 70%);
+  --gradient-spring-sunset: linear-gradient(135deg, #B8DDFF 0%, #B5E3B8 50%, #FFEEAD 100%);
+  
+  /* === Interactive States - Subtle & Natural === */
+  --state-hover-opacity: 0.85;
+  --state-hover-glow: rgba(255, 232, 154, 0.15);
+  --state-active-scale: 0.98;
+  --state-focus-ring: rgba(168, 216, 255, 0.3);
+  
+  /* === Atmospheric Particles === */
+  --particle-dust: rgba(255, 232, 154, 0.4);
+  --particle-light: rgba(255, 249, 229, 0.6);
+  --particle-glow: rgba(255, 243, 200, 0.5);
+  
+  /* === Grid System === */
+  --spacing-unit: 8px;
+  --margin-default: 24px;
+  --card-radius: 20px;
+  --card-radius-lg: 28px;
+  --card-radius-sm: 16px;
+  
+  /* === Typography === */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro', sans-serif;
+  
+  /* Reverie Typography System - Soft & Storybook-like */
+  --font-heading: 'Quicksand', 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'DM Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-atmosphere: 'Fraunces', Georgia, serif;
+  --font-ui: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  
+  /* === Compatibility Tokens === */
+  --font-size: 16px;
+  --background: #FFFEFB;
+  --foreground: #5A7B65;
+  --card: rgba(255, 255, 255, 0.85);
+  --card-foreground: #5A7B65;
+  --popover: rgba(255, 255, 255, 0.95);
+  --popover-foreground: #5A7B65;
+  --primary: #B8DDFF;
+  --primary-foreground: #5A7B65;
+  --secondary: #B5E3B8;
+  --secondary-foreground: #5A7B65;
+  --muted: rgba(181, 227, 184, 0.2);
+  --muted-foreground: #95D199;
+  --accent: #FFEEAD;
+  --accent-foreground: #5A7B65;
+  --destructive: #FFB8C6;
+  --destructive-foreground: #5A7B65;
+  --border: rgba(181, 227, 184, 0.3);
+  --input: rgba(255, 255, 255, 0.9);
+  --input-background: rgba(255, 255, 255, 0.9);
+  --switch-background: rgba(184, 221, 255, 0.35);
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --ring: rgba(184, 221, 255, 0.5);
+  --chart-1: #9ACFED;
+  --chart-2: #95D199;
+  --chart-3: #FFEEAD;
+  --chart-4: #FFE0CC;
+  --chart-5: #B8DDFF;
+  --radius: 20px;
+  --sidebar: #FFFEFB;
+  --sidebar-foreground: #5A7B65;
+  --sidebar-primary: #9ACFED;
+  --sidebar-primary-foreground: #5A7B65;
+  --sidebar-accent: rgba(181, 227, 184, 0.2);
+  --sidebar-accent-foreground: #7BB580;
+  --sidebar-border: rgba(181, 227, 184, 0.3);
+  --sidebar-ring: rgba(184, 221, 255, 0.5);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.145 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.145 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: oklch(0.637 0.237 25.331);
+  --border: oklch(0.269 0 0);
+  --input: oklch(0.269 0 0);
+  --ring: oklch(0.439 0 0);
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(0.269 0 0);
+  --sidebar-ring: oklch(0.439 0 0);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+  }
+
+  /**
+  * Default typography styles for HTML elements (h1-h4, p, label, button, input).
+  * These are in @layer base, so Tailwind utility classes (like text-sm, text-lg) automatically override them.
+  */
+
+  html {
+    font-size: var(--font-size);
+    font-family: var(--font-body);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+  }
+
+  h1 {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  h2 {
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  h3 {
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  h4 {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  label {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+    font-family: var(--font-ui);
+  }
+
+  button {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+    font-family: var(--font-ui);
+  }
+
+  input {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-normal);
+    line-height: 1.5;
+    font-family: var(--font-body);
+  }
+
+  p {
+    font-family: var(--font-body);
+  }
+}
+
+/* === Ghibli Paper Texture Utilities === */
+@layer utilities {
+  /* Typography utilities for special cases */
+  .font-heading {
+    font-family: var(--font-heading);
+  }
+  
+  .font-body {
+    font-family: var(--font-body);
+  }
+  
+  .font-atmosphere {
+    font-family: var(--font-atmosphere);
+  }
+  
+  .font-ui {
+    font-family: var(--font-ui);
+  }
+  
+  /* Subtle paper texture overlay - can be applied globally or to specific elements */
+  .paper-texture {
+    position: relative;
+  }
+  
+  .paper-texture::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.025;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.5'/%3E%3C/svg%3E");
+    z-index: 1;
+  }
+  
+  /* Medium intensity paper texture */
+  .paper-texture-medium {
+    position: relative;
+  }
+  
+  .paper-texture-medium::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.04;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.5'/%3E%3C/svg%3E");
+    z-index: 1;
+  }
+  
+  /* Strong paper texture for cards */
+  .paper-texture-strong {
+    position: relative;
+  }
+  
+  .paper-texture-strong::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.06;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.5'/%3E%3C/svg%3E");
+    z-index: 1;
+  }
+  
+  /* Ghibli-style soft glow utilities */
+  .glow-sky {
+    box-shadow: var(--glow-sky);
+  }
+  
+  .glow-meadow {
+    box-shadow: var(--glow-meadow);
+  }
+  
+  .glow-sun {
+    box-shadow: var(--glow-sun);
+  }
+  
+  .glow-calm {
+    box-shadow: var(--glow-calm);
+  }
+  
+  /* Soft shadow utilities */
+  .shadow-ghibli {
+    box-shadow: var(--shadow-soft);
+  }
+  
+  .shadow-ghibli-md {
+    box-shadow: var(--shadow-medium);
+  }
+  
+  .shadow-ghibli-lg {
+    box-shadow: var(--shadow-strong);
+  }
+}
