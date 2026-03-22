@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { PixelIcon } from './PixelIcon';
 import { ReverieButton } from './ReverieButton';
 import { GhibliBackground } from './GhibliBackground';
-import springWindowImg from 'figma:asset/213de50120f0b1e6f10d449fd7d2831ff161d156.png';
-import earlyInternetImg from 'figma:asset/57388e386573b7f1f030332335dfab77c975e4c5.png';
-import childhoodBedroomImg from 'figma:asset/cc70e1374516ec122a5e49f81ce099502394ce25.png';
-import libraryCornerImg from 'figma:asset/d0e52307aed4e225ade29e888772bff13c74b434.png';
-import natureMeadowImg from 'figma:asset/723ee9590660641bfc337977052cedd07429b4db.png';
+const springWindowImg = '/src/assets/213de50120f0b1e6f10d449fd7d2831ff161d156.png';
+const earlyInternetImg = '/src/assets/57388e386573b7f1f030332335dfab77c975e4c5.png';
+const childhoodBedroomImg = '/src/assets/cc70e1374516ec122a5e49f81ce099502394ce25.png';
+const libraryCornerImg = '/src/assets/d0e52307aed4e225ade29e888772bff13c74b434.png';
+const natureMeadowImg = '/src/assets/723ee9590660641bfc337977052cedd07429b4db.png';
 
 interface MemoryAtmospheresScreenProps {
   onSelect?: (atmosphereId: string) => void;

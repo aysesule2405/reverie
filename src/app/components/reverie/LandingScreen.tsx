@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import ghibliLandscape from 'figma:asset/573cbd7ceaaa6d73a84668028329e1776130e659.png';
+const ghibliLandscape = '/src/assets/573cbd7ceaaa6d73a84668028329e1776130e659.png';
 
 interface LandingScreenProps {
   onBegin?: () => void;

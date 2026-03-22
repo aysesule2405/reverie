@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ReverieButton } from './ReverieButton';
-import ghibliLandscape from 'figma:asset/573cbd7ceaaa6d73a84668028329e1776130e659.png';
+const ghibliLandscape = '/src/assets/573cbd7ceaaa6d73a84668028329e1776130e659.png';
 
 interface AuthScreenProps {
   onLogin?: (email: string, password: string) => void;
@@ -13,8 +13,8 @@ export function AuthScreen({ onLogin, onSignUp, onGoogleAuth }: AuthScreenProps)
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (e?: React.FormEvent | React.MouseEvent) => {
+    e?.preventDefault();
     if (mode === 'login') {
       onLogin?.(email, password);
     } else {

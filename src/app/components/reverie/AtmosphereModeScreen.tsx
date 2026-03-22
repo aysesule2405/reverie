@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { PixelIcon } from './PixelIcon';
 import { getAtmosphereSounds } from './atmosphereSounds';
-import springWindowImg from 'figma:asset/213de50120f0b1e6f10d449fd7d2831ff161d156.png';
-import earlyInternetImg from 'figma:asset/57388e386573b7f1f030332335dfab77c975e4c5.png';
-import childhoodBedroomImg from 'figma:asset/cc70e1374516ec122a5e49f81ce099502394ce25.png';
-import libraryCornerImg from 'figma:asset/d0e52307aed4e225ade29e888772bff13c74b434.png';
-import natureMeadowImg from 'figma:asset/723ee9590660641bfc337977052cedd07429b4db.png';
+const springWindowImg = '/src/assets/213de50120f0b1e6f10d449fd7d2831ff161d156.png';
+const earlyInternetImg = '/src/assets/57388e386573b7f1f030332335dfab77c975e4c5.png';
+const childhoodBedroomImg = '/src/assets/cc70e1374516ec122a5e49f81ce099502394ce25.png';
+const libraryCornerImg = '/src/assets/d0e52307aed4e225ade29e888772bff13c74b434.png';
+const natureMeadowImg = '/src/assets/723ee9590660641bfc337977052cedd07429b4db.png';
 
 interface AtmosphereModeScreenProps {
   atmosphereId?: string;
@@ -31,25 +31,36 @@ export function AtmosphereModeScreen({
   const [isLoaded, setIsLoaded] = useState(false);
   const [sessionTime, setSessionTime] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioRefs = useRef<HTMLAudioElement[]>([]);
 
   useEffect(() => {
     // Fade in effect
     setTimeout(() => setIsLoaded(true), 100);
 
-    // Load and play atmosphere sound
+    // Load and play all atmosphere sounds
     const sounds = getAtmosphereSounds(atmosphereId);
+    // Stop previous audios
+    audioRefs.current.forEach(a => {
+      try { a.pause(); a.src = ''; } catch(e) {}
+    });
+    audioRefs.current = [];
+
     if (sounds.length > 0) {
-      const sound = sounds[0]; // Use the first (main) sound
-      const audio = new Audio(sound.path);
-      audio.loop = sound.loop;
-      audio.volume = (soundVolume / 100) * (sound.volume / 100);
-      
-      // Play audio (with error handling)
-      audio.play().catch(error => {
-        console.log('Audio playback requires user interaction:', error);
+      sounds.forEach((sound) => {
+        try {
+          const audio = new Audio(sound.path);
+          audio.loop = Boolean(sound.loop);
+          audio.volume = (soundVolume / 100) * (sound.volume / 100);
+          // attempt to play (may require user gesture in some browsers)
+          audio.play().catch((error) => {
+            // Don't crash the app; log for debug
+            console.debug('Audio playback blocked (user gesture may be required):', error);
+          });
+          audioRefs.current.push(audio);
+        } catch (err) {
+          console.error('Failed to create audio for', sound.path, err);
+        }
       });
-      
-      audioRef.current = audio;
     }
 
     // Session timer
@@ -69,12 +80,14 @@ export function AtmosphereModeScreen({
 
   // Update volume when slider changes
   useEffect(() => {
-    if (audioRef.current) {
-      const sounds = getAtmosphereSounds(atmosphereId);
-      if (sounds.length > 0) {
-        audioRef.current.volume = (soundVolume / 100) * (sounds[0].volume / 100);
-      }
-    }
+    const sounds = getAtmosphereSounds(atmosphereId);
+    audioRefs.current.forEach((audio, idx) => {
+      const sound = sounds[idx];
+      if (!audio) return;
+      try {
+        audio.volume = (soundVolume / 100) * ((sound && sound.volume) ? (sound.volume / 100) : 1);
+      } catch (e) {}
+    });
   }, [soundVolume, atmosphereId]);
 
   // Format session time as MM:SS
