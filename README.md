@@ -30,9 +30,7 @@ Built with (TECH STACK)
 Thumbnail image
 ---------------
 
-Include a 3:2 JPG/PNG/GIF in the repo (recommended path: `/assets/thumbnail.jpg`) and reference it here. Example (replace with your file):
-
-![Reverie thumbnail](/src/assets/573cbd7ceaaa6d73a84668028329e1776130e659.png)
+![Reverie thumbnail](/src/assets/Thumbnail.png)
 
 About the project
 -----------------
@@ -65,26 +63,12 @@ What we learned
 Video demo of project features & functionality
 --------------------------------------------
 
-Upload a ~2-minute demo to YouTube and paste the link here:
-
-YouTube demo: [PASTE DEMO LINK HERE]
+YouTube demo: [(https://youtu.be/rYSV56UOjUY)]
 
 Link to Source Code (MANDATORY)
 --------------------------------
 
 Public repository: https://github.com/aysesule2405/reverie
-
-Participants
-------------
-- Full name (Team member 1)
-- Full name (Team member 2)
-
-Live Deployment (optional)
--------------------------
-
-If you deploy the app, paste the URL here:
-
-Live demo: [OPTIONAL DEPLOYMENT LINK]
 
 How to run locally (developer notes)
 -----------------------------------
@@ -137,17 +121,6 @@ Seed data
 
 Notes
 - Audio autoplay may be blocked by browsers until the user interacts with the page — click "Begin" or enter an atmosphere to enable sounds.
-
-Judging checklist (make sure you include these before submission)
-- Project overview with table number (this file)
-- 2-minute YouTube demo link
-- Public Git repository link (this repository)
-- Team member full names listed above
-- README with run instructions (this file)
-
-Contact
--------
-If the judges or mentors need to reach the team, add a contact email here.
 
 
 Run both servers
