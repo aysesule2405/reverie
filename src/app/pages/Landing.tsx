@@ -1,5 +1,7 @@
-import React from 'react';
 import { Link } from 'react-router';
+import { Sun, Moon } from 'lucide-react';
+import { useTheme } from '../ThemeContext';
+import { getLogoByTheme } from '../../assets/logos';
 
 const FEATURES = [
   {
@@ -33,8 +35,10 @@ const FEATURES = [
 ];
 
 export default function Landing() {
+  const { isDark, toggleTheme } = useTheme();
+
   return (
-    <div className="min-h-screen overflow-x-hidden" style={{ background: '#FFFEFB' }}>
+    <div className="min-h-screen overflow-x-hidden" style={{ background: 'var(--rv-bg-solid)' }}>
 
       {/* Ambient background */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
@@ -49,15 +53,21 @@ export default function Landing() {
       {/* Navbar */}
       <nav className="relative z-10 flex items-center justify-between px-8 py-5 max-w-7xl mx-auto">
         <div className="flex items-center gap-3">
-          <div
-            className="w-9 h-9 rounded-xl flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, #6A7FDB, #A9B8FF)', boxShadow: '0 4px 14px rgba(106,127,219,0.3)' }}
-          >
-            <span className="text-white text-sm">✦</span>
-          </div>
-          <span className="font-heading font-semibold text-xl" style={{ color: '#2C2C3E' }}>Reverie</span>
+          <img
+            src={getLogoByTheme(isDark, 'written')}
+            alt="Reverie"
+            className="h-9 object-contain"
+          />
         </div>
         <div className="flex items-center gap-3">
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-xl text-sm transition-all duration-200"
+            style={{ color: 'var(--rv-text-soft)', background: 'var(--rv-tag)' }}
+            aria-label="Toggle theme"
+          >
+            {isDark ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
           <Link
             to="/login"
             className="px-5 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:bg-indigo-50"
@@ -77,7 +87,6 @@ export default function Landing() {
 
       {/* Hero */}
       <section className="relative z-10 max-w-5xl mx-auto px-8 pt-20 pb-28 text-center">
-        {/* Eyebrow */}
         <div
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium mb-8"
           style={{ background: 'rgba(169,184,255,0.15)', color: '#6A7FDB', border: '1px solid rgba(169,184,255,0.3)' }}
@@ -88,7 +97,7 @@ export default function Landing() {
 
         <h1
           className="font-heading font-semibold leading-tight mb-6"
-          style={{ color: '#1a1a2e', fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', lineHeight: 1.15 }}
+          style={{ color: 'var(--rv-text)', fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', lineHeight: 1.15 }}
         >
           Curate the feelings
           <br />
@@ -103,7 +112,7 @@ export default function Landing() {
 
         <p
           className="text-lg leading-relaxed mx-auto mb-10 max-w-xl"
-          style={{ color: '#6B7DA8' }}
+          style={{ color: 'var(--rv-text-soft)' }}
         >
           Reverie is a private space to save mood boards, reflections, soundtracks, and emotions —
           a living memory of your inner world, beautifully organized.
@@ -122,7 +131,7 @@ export default function Landing() {
           </Link>
           <Link
             to="/login"
-            className="px-8 py-3.5 rounded-2xl text-base font-medium transition-all duration-200 hover:bg-gray-50"
+            className="px-8 py-3.5 rounded-2xl text-base font-medium transition-all duration-200"
             style={{ color: '#6A7FDB', border: '1.5px solid rgba(169,184,255,0.4)' }}
           >
             I have an account
@@ -134,27 +143,26 @@ export default function Landing() {
           <div
             className="rounded-3xl p-8 text-left relative overflow-hidden"
             style={{
-              background: 'rgba(255,255,255,0.8)',
+              background: 'var(--rv-hero-card)',
               backdropFilter: 'blur(20px)',
               boxShadow: '0 20px 60px rgba(106,127,219,0.12)',
-              border: '1px solid rgba(169,184,255,0.2)',
+              border: '1px solid var(--rv-border)',
             }}
           >
-            {/* Mock space card preview */}
             <div className="flex items-start justify-between mb-5">
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ background: 'rgba(169,184,255,0.15)', color: '#6A7FDB' }}>
+                  <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ background: 'var(--rv-tag)', color: '#6A7FDB' }}>
                     cozy
                   </span>
                   <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ background: 'rgba(246,214,255,0.3)', color: '#A07AB0' }}>
                     private
                   </span>
                 </div>
-                <h3 className="font-heading font-semibold text-xl" style={{ color: '#2C2C3E' }}>
+                <h3 className="font-heading font-semibold text-xl" style={{ color: 'var(--rv-text)' }}>
                   Sunday Morning in Autumn
                 </h3>
-                <p className="text-sm mt-1" style={{ color: '#8B97B8' }}>
+                <p className="text-sm mt-1" style={{ color: 'var(--rv-text-secondary)' }}>
                   The kind of morning where everything feels still and amber-coloured…
                 </p>
               </div>
@@ -166,8 +174,8 @@ export default function Landing() {
               ))}
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-xs" style={{ color: '#A9B8FF' }}>♪</span>
-              <span className="text-xs" style={{ color: '#8B97B8' }}>3 songs · Last edited today</span>
+              <span style={{ color: '#A9B8FF' }}>♪</span>
+              <span className="text-xs" style={{ color: 'var(--rv-text-secondary)' }}>3 songs · Last edited today</span>
             </div>
           </div>
         </div>
@@ -176,10 +184,10 @@ export default function Landing() {
       {/* Features */}
       <section className="relative z-10 max-w-6xl mx-auto px-8 py-20">
         <div className="text-center mb-16">
-          <h2 className="font-heading font-semibold text-3xl mb-4" style={{ color: '#2C2C3E' }}>
+          <h2 className="font-heading font-semibold text-3xl mb-4" style={{ color: 'var(--rv-text)' }}>
             Everything your inner world needs
           </h2>
-          <p className="text-base" style={{ color: '#8B97B8' }}>
+          <p className="text-base" style={{ color: 'var(--rv-text-secondary)' }}>
             Built for deep personal reflection, beautifully simple to use.
           </p>
         </div>
@@ -190,9 +198,9 @@ export default function Landing() {
               key={f.title}
               className="rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1"
               style={{
-                background: 'rgba(255,255,255,0.75)',
+                background: 'var(--rv-card-section)',
                 backdropFilter: 'blur(16px)',
-                border: '1px solid rgba(169,184,255,0.15)',
+                border: '1px solid var(--rv-border)',
                 boxShadow: '0 4px 20px rgba(106,127,219,0.07)',
               }}
             >
@@ -202,10 +210,10 @@ export default function Landing() {
               >
                 <span className="text-xl" style={{ color: f.color }}>{f.icon}</span>
               </div>
-              <h3 className="font-heading font-semibold text-base mb-2" style={{ color: '#2C2C3E' }}>
+              <h3 className="font-heading font-semibold text-base mb-2" style={{ color: 'var(--rv-text)' }}>
                 {f.title}
               </h3>
-              <p className="text-sm leading-relaxed" style={{ color: '#8B97B8' }}>
+              <p className="text-sm leading-relaxed" style={{ color: 'var(--rv-text-secondary)' }}>
                 {f.description}
               </p>
             </div>
@@ -244,7 +252,7 @@ export default function Landing() {
 
       {/* Footer */}
       <footer className="relative z-10 text-center py-10 px-8">
-        <p className="text-sm" style={{ color: '#C4CFFF' }}>
+        <p className="text-sm" style={{ color: 'var(--rv-text-pale)' }}>
           ✦ Reverie — Designed with softness &amp; care
         </p>
       </footer>

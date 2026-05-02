@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router';
+import { Sun, Moon, Bookmark, Clock } from 'lucide-react';
 import { useAuth } from '../../AuthContext';
+import { useTheme } from '../../ThemeContext';
+import { getLogoByTheme } from '../../../assets/logos';
+import { AmbientPlayerProvider } from '../../AmbientPlayerContext';
+import AmbientPlayer from './AmbientPlayer';
 
 export default function AppShell() {
   const { user, logout } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -13,7 +19,8 @@ export default function AppShell() {
   };
 
   return (
-    <div className="min-h-screen flex" style={{ background: 'linear-gradient(135deg, #F0F7FC 0%, #FFFEFB 50%, #FFF5FB 100%)' }}>
+    <AmbientPlayerProvider>
+    <div className="min-h-screen flex" style={{ background: 'var(--rv-bg)' }}>
       {/* Decorative ambient orbs */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full blur-3xl opacity-25"
@@ -41,35 +48,34 @@ export default function AppShell() {
           ${mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
         style={{
-          background: 'rgba(255, 254, 251, 0.88)',
+          background: 'var(--rv-sidebar)',
           backdropFilter: 'blur(24px)',
-          borderRight: '1px solid rgba(169, 184, 255, 0.18)',
+          borderRight: '1px solid var(--rv-border-sidebar)',
           boxShadow: '4px 0 32px rgba(106, 127, 219, 0.07)',
         }}
       >
         {/* Logo */}
-        <div className="px-6 pt-8 pb-6" style={{ borderBottom: '1px solid rgba(169,184,255,0.12)' }}>
+        <div className="px-6 pt-8 pb-6" style={{ borderBottom: '1px solid var(--rv-border-divider)' }}>
           <div className="flex items-center gap-3">
-            <div
-              className="w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0"
-              style={{ background: 'linear-gradient(135deg, #6A7FDB 0%, #A9B8FF 100%)', boxShadow: '0 4px 15px rgba(106,127,219,0.35)' }}
-            >
-              <span className="text-white text-base select-none">✦</span>
-            </div>
+            <img
+              src={getLogoByTheme(isDark, 'icon')}
+              alt="Reverie"
+              className="w-10 h-10 object-contain flex-shrink-0"
+            />
             <div>
-              <h1 className="font-heading font-semibold text-xl leading-none" style={{ color: '#2C2C3E' }}>
+              <h1 className="font-heading font-semibold text-xl leading-none" style={{ color: 'var(--rv-text)' }}>
                 Reverie
               </h1>
-              <p className="text-xs mt-0.5" style={{ color: '#A9B8FF' }}>Mood Space</p>
+              <p className="text-xs mt-0.5" style={{ color: 'var(--rv-text-muted)' }}>Mood Space</p>
             </div>
           </div>
         </div>
 
         {/* User card */}
-        <div className="px-4 py-4" style={{ borderBottom: '1px solid rgba(169,184,255,0.12)' }}>
+        <div className="px-4 py-4" style={{ borderBottom: '1px solid var(--rv-border-divider)' }}>
           <div
             className="flex items-center gap-3 px-3 py-2.5 rounded-2xl"
-            style={{ background: 'rgba(169,184,255,0.08)' }}
+            style={{ background: 'var(--rv-user-card)' }}
           >
             <div
               className="w-9 h-9 rounded-full flex items-center justify-center text-white font-semibold text-sm flex-shrink-0"
@@ -81,30 +87,49 @@ export default function AppShell() {
               }
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-medium truncate" style={{ color: '#2C2C3E' }}>{user?.name}</p>
-              <p className="text-xs truncate" style={{ color: '#A9B8FF' }}>{user?.email}</p>
+              <p className="text-sm font-medium truncate" style={{ color: 'var(--rv-text)' }}>{user?.name}</p>
+              <p className="text-xs truncate" style={{ color: 'var(--rv-text-muted)' }}>{user?.email}</p>
             </div>
           </div>
         </div>
 
         {/* Navigation */}
         <nav className="flex-1 px-4 py-5 space-y-1 overflow-y-auto">
-          <p className="text-xs font-medium uppercase tracking-widest mb-3 px-3" style={{ color: '#C4CFFF' }}>
+          <p className="text-xs font-medium uppercase tracking-widest mb-3 px-3" style={{ color: 'var(--rv-text-pale)' }}>
             Navigation
           </p>
-          <SidebarLink to="/dashboard" icon="◈" label="My Spaces" onClick={() => setMobileOpen(false)} />
-          <SidebarLink to="/create"    icon="✦" label="Create New" onClick={() => setMobileOpen(false)} />
-          <SidebarLink to="/profile"   icon="◉" label="Profile" onClick={() => setMobileOpen(false)} />
+          <SidebarLink to="/dashboard"  icon="◈"                      label="My Spaces"  onClick={() => setMobileOpen(false)} />
+          <SidebarLink to="/community" icon="✧"                      label="Community"  onClick={() => setMobileOpen(false)} />
+          <SidebarLink to="/saved"     icon={<Bookmark size={15} />} label="Saved"      onClick={() => setMobileOpen(false)} />
+          <SidebarLink to="/timeline"  icon={<Clock size={15} />}    label="Timeline"   onClick={() => setMobileOpen(false)} />
+          <SidebarLink to="/create"    icon="✦"                      label="Create New" onClick={() => setMobileOpen(false)} />
+          <SidebarLink to="/profile"   icon="◉"                      label="Profile"    onClick={() => setMobileOpen(false)} />
         </nav>
 
-        {/* Logout */}
-        <div className="px-4 py-4" style={{ borderTop: '1px solid rgba(169,184,255,0.12)' }}>
+        {/* Ambient player */}
+        <div className="px-4 pb-3">
+          <AmbientPlayer />
+        </div>
+
+        {/* Bottom actions: theme toggle + sign out */}
+        <div className="px-4 py-4 space-y-1" style={{ borderTop: '1px solid var(--rv-border-divider)' }}>
+          <button
+            onClick={toggleTheme}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200"
+            style={{ color: 'var(--rv-text-soft)', background: 'var(--rv-user-card)' }}
+            aria-label="Toggle theme"
+          >
+            <span className="w-5 flex items-center justify-center flex-shrink-0">
+              {isDark ? <Sun size={16} /> : <Moon size={16} />}
+            </span>
+            <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>
+          </button>
           <button
             onClick={handleLogout}
             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 hover:bg-red-50"
-            style={{ color: '#c77d7d' }}
+            style={{ color: 'var(--rv-danger)' }}
           >
-            <span className="text-base">⎋</span>
+            <span className="text-base w-5 text-center">⎋</span>
             <span>Sign Out</span>
           </button>
         </div>
@@ -114,28 +139,36 @@ export default function AppShell() {
       <div className="flex-1 flex flex-col min-w-0 relative z-10">
         {/* Mobile top bar */}
         <header
-          className="lg:hidden flex items-center gap-3 px-4 py-3 sticky top-0 z-10"
+          className="lg:hidden flex items-center justify-between px-4 py-3 sticky top-0 z-10"
           style={{
-            background: 'rgba(255,254,251,0.92)',
+            background: 'var(--rv-topbar)',
             backdropFilter: 'blur(20px)',
-            borderBottom: '1px solid rgba(169,184,255,0.15)',
+            borderBottom: '1px solid var(--rv-border-divider)',
           }}
         >
-          <button
-            onClick={() => setMobileOpen(true)}
-            className="p-2 rounded-xl transition-colors hover:bg-indigo-50"
-            aria-label="Open menu"
-          >
-            <svg width="20" height="20" fill="none" stroke="#6A7FDB" strokeWidth="2" strokeLinecap="round">
-              <line x1="3" y1="6" x2="17" y2="6" />
-              <line x1="3" y1="12" x2="17" y2="12" />
-              <line x1="3" y1="18" x2="17" y2="18" />
-            </svg>
-          </button>
-          <div className="flex items-center gap-2">
-            <span style={{ color: '#6A7FDB' }}>✦</span>
-            <span className="font-heading font-semibold" style={{ color: '#2C2C3E' }}>Reverie</span>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setMobileOpen(true)}
+              className="p-2 rounded-xl transition-colors hover:bg-indigo-50"
+              aria-label="Open menu"
+            >
+              <svg width="20" height="20" fill="none" stroke="#6A7FDB" strokeWidth="2" strokeLinecap="round">
+                <line x1="3" y1="6" x2="17" y2="6" />
+                <line x1="3" y1="12" x2="17" y2="12" />
+                <line x1="3" y1="18" x2="17" y2="18" />
+              </svg>
+            </button>
+            <img src={getLogoByTheme(isDark, 'icon')} alt="Reverie" className="w-7 h-7 object-contain" />
+            <span className="font-heading font-semibold" style={{ color: 'var(--rv-text)' }}>Reverie</span>
           </div>
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-xl transition-colors"
+            style={{ color: 'var(--rv-text-soft)', background: 'var(--rv-user-card)' }}
+            aria-label="Toggle theme"
+          >
+            {isDark ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
         </header>
 
         {/* Page content */}
@@ -144,12 +177,13 @@ export default function AppShell() {
         </main>
       </div>
     </div>
+    </AmbientPlayerProvider>
   );
 }
 
 function SidebarLink({
   to, icon, label, onClick,
-}: { to: string; icon: string; label: string; onClick?: () => void }) {
+}: { to: string; icon: React.ReactNode; label: string; onClick?: () => void }) {
   return (
     <NavLink
       to={to}
@@ -162,7 +196,7 @@ function SidebarLink({
               color: 'white',
               boxShadow: '0 4px 16px rgba(106,127,219,0.28)',
             }
-          : { color: '#6B7DA8' }
+          : { color: 'var(--rv-text-soft)' }
       }
     >
       {({ isActive }) => (

@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { useAuth } from '../AuthContext';
+import { useTheme } from '../ThemeContext';
+import { getLogoByTheme } from '../../assets/logos';
 
 export default function Signup() {
   const { register } = useAuth();
+  const { isDark } = useTheme();
   const navigate = useNavigate();
 
   const [name, setName] = useState('');
@@ -40,7 +43,7 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen flex" style={{ background: '#FFFEFB' }}>
+    <div className="min-h-screen flex" style={{ background: 'var(--rv-bg-solid)' }}>
       {/* Ambient orbs */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         <div className="absolute -top-32 right-0 w-96 h-96 rounded-full blur-3xl opacity-20"
@@ -59,11 +62,8 @@ export default function Signup() {
           backgroundSize: '40px 40px',
         }} />
         <div className="relative z-10 p-12">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.2)' }}>
-              <span className="text-white text-sm">✦</span>
-            </div>
-            <span className="font-heading font-semibold text-xl text-white">Reverie</span>
+          <Link to="/">
+            <img src={getLogoByTheme(isDark, 'written')} alt="Reverie" className={`h-10 object-contain${isDark ? '' : ' brightness-0 invert'}`} />
           </Link>
         </div>
         <div className="relative z-10 p-12">
@@ -82,30 +82,29 @@ export default function Signup() {
       <div className="flex-1 flex items-center justify-center px-8 py-12 relative z-10">
         <div className="w-full max-w-md">
           {/* Mobile logo */}
-          <Link to="/" className="flex items-center gap-2 mb-10 lg:hidden">
-            <span style={{ color: '#6A7FDB' }}>✦</span>
-            <span className="font-heading font-semibold text-xl" style={{ color: '#2C2C3E' }}>Reverie</span>
+          <Link to="/" className="flex mb-10 lg:hidden">
+            <img src={getLogoByTheme(isDark, 'written')} alt="Reverie" className="h-9 object-contain" />
           </Link>
 
-          <h2 className="font-heading font-semibold text-3xl mb-2" style={{ color: '#2C2C3E' }}>
+          <h2 className="font-heading font-semibold text-3xl mb-2" style={{ color: 'var(--rv-text)' }}>
             Create your space
           </h2>
-          <p className="text-sm mb-8" style={{ color: '#8B97B8' }}>
+          <p className="text-sm mb-8" style={{ color: 'var(--rv-text-secondary)' }}>
             Join Reverie — free, private, entirely yours.
           </p>
 
           {error && (
             <div className="px-4 py-3 rounded-xl text-sm mb-6"
-              style={{ background: 'rgba(255,100,100,0.08)', color: '#c0524e', border: '1px solid rgba(255,100,100,0.15)' }}>
+              style={{ background: 'var(--rv-error-bg)', color: 'var(--rv-error)', border: '1px solid var(--rv-error-border)' }}>
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-            <Field label="Your name" type="text" value={name} onChange={setName} placeholder="Ava Sinclair" />
-            <Field label="Email address" type="email" value={email} onChange={setEmail} placeholder="you@example.com" />
-            <Field label="Password" type="password" value={password} onChange={setPassword} placeholder="At least 6 characters" />
-            <Field label="Confirm password" type="password" value={confirm} onChange={setConfirm} placeholder="••••••••" />
+            <Field label="Your name"       type="text"     value={name}     onChange={setName}     placeholder="Ava Sinclair" />
+            <Field label="Email address"   type="email"    value={email}    onChange={setEmail}    placeholder="you@example.com" />
+            <Field label="Password"        type="password" value={password} onChange={setPassword} placeholder="At least 6 characters" />
+            <Field label="Confirm password" type="password" value={confirm}  onChange={setConfirm}  placeholder="••••••••" />
 
             <button
               type="submit"
@@ -120,7 +119,7 @@ export default function Signup() {
             </button>
           </form>
 
-          <p className="text-center text-sm mt-8" style={{ color: '#8B97B8' }}>
+          <p className="text-center text-sm mt-8" style={{ color: 'var(--rv-text-secondary)' }}>
             Already have an account?{' '}
             <Link to="/login" className="font-medium hover:underline" style={{ color: '#6A7FDB' }}>
               Sign in
@@ -140,7 +139,7 @@ function Field({
 }) {
   return (
     <div>
-      <label className="block text-sm font-medium mb-1.5" style={{ color: '#5A6B8A' }}>{label}</label>
+      <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--rv-text-label)' }}>{label}</label>
       <input
         type={type}
         value={value}
@@ -148,13 +147,13 @@ function Field({
         placeholder={placeholder}
         className="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all duration-200"
         style={{
-          background: 'rgba(255,255,255,0.9)',
-          border: '1.5px solid rgba(169,184,255,0.35)',
-          color: '#2C2C3E',
+          background: 'var(--rv-input)',
+          border: '1.5px solid var(--rv-border-input)',
+          color: 'var(--rv-text)',
           boxShadow: '0 2px 8px rgba(106,127,219,0.05)',
         }}
         onFocus={(e) => { e.target.style.borderColor = '#6A7FDB'; e.target.style.boxShadow = '0 0 0 3px rgba(106,127,219,0.12)'; }}
-        onBlur={(e) => { e.target.style.borderColor = 'rgba(169,184,255,0.35)'; e.target.style.boxShadow = '0 2px 8px rgba(106,127,219,0.05)'; }}
+        onBlur={(e) => { e.target.style.borderColor = 'var(--rv-border-input)'; e.target.style.boxShadow = '0 2px 8px rgba(106,127,219,0.05)'; }}
       />
     </div>
   );

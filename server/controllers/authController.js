@@ -53,7 +53,16 @@ exports.me = async (req, res, next) => {
   try {
     if (!req.user) return res.status(401).json({ message: 'Not authenticated' });
     const user = await User.findById(req.user._id).select('-password');
-    res.json({ user: { id: user._id, name: user.name, email: user.email, avatarUrl: user.avatarUrl } });
+    res.json({
+      user: {
+        id:              user._id,
+        name:            user.name,
+        email:           user.email,
+        avatarUrl:       user.avatarUrl,
+        backgroundMusic: user.backgroundMusic,
+        musicSettings:   user.musicSettings,
+      },
+    });
   } catch (err) {
     next(err);
   }

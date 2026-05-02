@@ -304,6 +304,105 @@
   }
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   REVERIE LIGHT / DARK TOKENS  (--rv-*)
+   These are used by all page components via inline style: var(--rv-*)
+   Toggle between themes by setting data-theme="dark" on <html>.
+   ═══════════════════════════════════════════════════════════════════════════ */
+:root {
+  --rv-bg:            linear-gradient(135deg, #F0F7FC 0%, #FFFEFB 50%, #FFF5FB 100%);
+  --rv-bg-solid:      #FFFEFB;
+  --rv-sidebar:       rgba(255, 254, 251, 0.88);
+  --rv-topbar:        rgba(255, 254, 251, 0.92);
+
+  --rv-card:          rgba(255, 255, 255, 0.85);
+  --rv-card-section:  rgba(255, 255, 255, 0.75);
+  --rv-card-subtle:   rgba(255, 255, 255, 0.72);
+  --rv-hero-card:     rgba(255, 255, 255, 0.80);
+  --rv-input:         rgba(255, 255, 255, 0.90);
+  --rv-disabled-bg:   rgba(240, 240, 248, 0.60);
+  --rv-tag:           rgba(169, 184, 255, 0.15);
+  --rv-user-card:     rgba(169, 184, 255, 0.08);
+  --rv-section-bg:    rgba(169, 184, 255, 0.06);
+  --rv-inactive-btn:  rgba(255, 255, 255, 0.70);
+
+  --rv-text:          #2C2C3E;
+  --rv-text-secondary:#8B97B8;
+  --rv-text-tertiary: #B0BBCC;
+  --rv-text-soft:     #6B7DA8;
+  --rv-text-pale:     #C4CFFF;
+  --rv-text-body:     #4A5568;
+  --rv-text-label:    #5A6B8A;
+  --rv-text-accent:   #6A7FDB;
+  --rv-text-muted:    #A9B8FF;
+  --rv-disabled-text: #9BA5B8;
+
+  --rv-border:        rgba(169, 184, 255, 0.15);
+  --rv-border-input:  rgba(169, 184, 255, 0.30);
+  --rv-border-divider:rgba(169, 184, 255, 0.12);
+  --rv-border-sidebar:rgba(169, 184, 255, 0.18);
+  --rv-border-inactive:rgba(169, 184, 255, 0.25);
+
+  --rv-danger:        #c07070;
+  --rv-danger-bg:     rgba(220, 100, 100, 0.08);
+  --rv-danger-border: rgba(220, 100, 100, 0.20);
+
+  --rv-error:         #c0524e;
+  --rv-error-bg:      rgba(255, 100, 100, 0.08);
+  --rv-error-border:  rgba(255, 100, 100, 0.15);
+
+  --rv-success:       #4a8a5a;
+  --rv-success-bg:    rgba(100, 200, 120, 0.08);
+  --rv-success-border:rgba(100, 200, 120, 0.20);
+}
+
+[data-theme="dark"] {
+  --rv-bg:            linear-gradient(135deg, #0D0C1D 0%, #14132A 50%, #1A1535 100%);
+  --rv-bg-solid:      #0D0C1D;
+  --rv-sidebar:       rgba(11, 10, 26, 0.96);
+  --rv-topbar:        rgba(11, 10, 26, 0.97);
+
+  --rv-card:          rgba(22, 20, 46, 0.88);
+  --rv-card-section:  rgba(20, 18, 42, 0.80);
+  --rv-card-subtle:   rgba(18, 17, 40, 0.75);
+  --rv-hero-card:     rgba(22, 20, 46, 0.80);
+  --rv-input:         rgba(18, 17, 40, 0.90);
+  --rv-disabled-bg:   rgba(14, 13, 30, 0.60);
+  --rv-tag:           rgba(169, 184, 255, 0.10);
+  --rv-user-card:     rgba(169, 184, 255, 0.06);
+  --rv-section-bg:    rgba(169, 184, 255, 0.04);
+  --rv-inactive-btn:  rgba(22, 20, 46, 0.75);
+
+  --rv-text:          #E4E2F8;
+  --rv-text-secondary:#9198B8;
+  --rv-text-tertiary: #5D6480;
+  --rv-text-soft:     #8088A8;
+  --rv-text-pale:     #505878;
+  --rv-text-body:     #A8ADC8;
+  --rv-text-label:    #8A90B0;
+  --rv-text-accent:   #8B9FE8;
+  --rv-text-muted:    #7A85C0;
+  --rv-disabled-text: #6B7290;
+
+  --rv-border:        rgba(169, 184, 255, 0.10);
+  --rv-border-input:  rgba(169, 184, 255, 0.18);
+  --rv-border-divider:rgba(169, 184, 255, 0.08);
+  --rv-border-sidebar:rgba(169, 184, 255, 0.10);
+  --rv-border-inactive:rgba(169, 184, 255, 0.14);
+
+  --rv-danger:        #c08888;
+  --rv-danger-bg:     rgba(220, 100, 100, 0.12);
+  --rv-danger-border: rgba(220, 100, 100, 0.25);
+
+  --rv-error:         #d06060;
+  --rv-error-bg:      rgba(255, 100, 100, 0.10);
+  --rv-error-border:  rgba(255, 100, 100, 0.20);
+
+  --rv-success:       #70b880;
+  --rv-success-bg:    rgba(100, 200, 120, 0.08);
+  --rv-success-border:rgba(100, 200, 120, 0.15);
+}
+
 /* === Ghibli Paper Texture Utilities === */
 @layer utilities {
   /* Typography utilities for special cases */

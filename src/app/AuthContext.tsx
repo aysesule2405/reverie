@@ -1,14 +1,40 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { api } from '../api/client';
 
-type User = { id: string; name: string; email: string; avatarUrl?: string } | null;
+export interface BackgroundMusic {
+  type: 'default' | 'upload' | 'external';
+  name: string;
+  url: string;
+}
+
+export interface MusicSettings {
+  volume: number;
+  loop: boolean;
+}
+
+export interface ProfileUpdateData {
+  name: string;
+  avatarUrl?: string;
+  backgroundMusic?: BackgroundMusic | null;
+  musicSettings?: MusicSettings;
+}
+
+type User = {
+  id: string;
+  name: string;
+  email: string;
+  avatarUrl?: string;
+  backgroundMusic?: BackgroundMusic;
+  musicSettings?: MusicSettings;
+} | null;
 
 interface AuthContextValue {
   user: User;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<void>;
-  updateProfile: (name: string, avatarUrl: string) => Promise<void>;
+  updateProfile: (data: ProfileUpdateData) => Promise<void>;
+  refreshUser: () => Promise<void>;
   logout: () => void;
 }
 
@@ -18,6 +44,7 @@ const AuthContext = createContext<AuthContextValue>({
   login: async () => {},
   register: async () => {},
   updateProfile: async () => {},
+  refreshUser: async () => {},
   logout: () => {},
 });
 
@@ -51,8 +78,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(res.user);
   };
 
-  const updateProfile = async (name: string, avatarUrl: string) => {
-    const res = await api.put('/auth/profile', { name, avatarUrl });
+  // Re-fetch the current user from /auth/me to sync any server-side changes
+  // (e.g. after a profile photo upload or music preference update).
+  const refreshUser = async () => {
+    const res = await api.get('/auth/me');
+    setUser(res.user);
+  };
+
+  // Calls the comprehensive /api/profile endpoint which handles name, avatarUrl,
+  // backgroundMusic, and musicSettings in one request.
+  const updateProfile = async (data: ProfileUpdateData) => {
+    const res = await api.put('/profile', data);
     setUser(res.user);
   };
 
@@ -62,7 +98,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, updateProfile, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, updateProfile, refreshUser, logout }}>
       {children}
     </AuthContext.Provider>
   );

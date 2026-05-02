@@ -6,14 +6,17 @@ import { api } from '../../api/client';
 interface MoodSpace {
   _id: string;
   title: string;
+  mood?: string;
   description?: string;
   reflection?: string;
   moodTags: string[];
   emotions: string[];
   category?: string;
   coverImageUrl?: string;
+  images: string[];
   colorPalette: string[];
   songLinks: string[];
+  audios: string[];
   visibility: 'public' | 'private';
   createdAt: string;
 }
@@ -45,9 +48,7 @@ export default function Dashboard() {
     }
   }, [search, category]);
 
-  useEffect(() => {
-    fetchSpaces();
-  }, [fetchSpaces]);
+  useEffect(() => { fetchSpaces(); }, [fetchSpaces]);
 
   const handleDelete = async (id: string) => {
     if (!window.confirm('Delete this mood space? This cannot be undone.')) return;
@@ -67,10 +68,10 @@ export default function Dashboard() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
         <div>
-          <h1 className="font-heading font-semibold text-2xl lg:text-3xl" style={{ color: '#2C2C3E' }}>
+          <h1 className="font-heading font-semibold text-2xl lg:text-3xl" style={{ color: 'var(--rv-text)' }}>
             My Spaces
           </h1>
-          <p className="text-sm mt-1" style={{ color: '#8B97B8' }}>
+          <p className="text-sm mt-1" style={{ color: 'var(--rv-text-secondary)' }}>
             Welcome back, {user?.name?.split(' ')[0]} ✦
           </p>
         </div>
@@ -95,13 +96,13 @@ export default function Dashboard() {
             placeholder="Search your spaces…"
             className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm outline-none transition-all"
             style={{
-              background: 'rgba(255,255,255,0.85)',
-              border: '1.5px solid rgba(169,184,255,0.3)',
-              color: '#2C2C3E',
+              background: 'var(--rv-input)',
+              border: '1.5px solid var(--rv-border-input)',
+              color: 'var(--rv-text)',
               boxShadow: '0 2px 8px rgba(106,127,219,0.05)',
             }}
             onFocus={(e) => { e.target.style.borderColor = '#6A7FDB'; e.target.style.boxShadow = '0 0 0 3px rgba(106,127,219,0.1)'; }}
-            onBlur={(e) => { e.target.style.borderColor = 'rgba(169,184,255,0.3)'; e.target.style.boxShadow = '0 2px 8px rgba(106,127,219,0.05)'; }}
+            onBlur={(e) => { e.target.style.borderColor = 'var(--rv-border-input)'; e.target.style.boxShadow = '0 2px 8px rgba(106,127,219,0.05)'; }}
           />
         </div>
         <div className="flex gap-2 flex-wrap">
@@ -112,7 +113,7 @@ export default function Dashboard() {
               className="px-3.5 py-2 rounded-xl text-xs font-medium capitalize transition-all duration-200"
               style={category === c
                 ? { background: 'linear-gradient(135deg, #6A7FDB, #A9B8FF)', color: 'white', boxShadow: '0 3px 10px rgba(106,127,219,0.25)' }
-                : { background: 'rgba(255,255,255,0.7)', color: '#6B7DA8', border: '1px solid rgba(169,184,255,0.25)' }
+                : { background: 'var(--rv-inactive-btn)', color: 'var(--rv-text-soft)', border: '1px solid var(--rv-border-inactive)' }
               }
             >
               {c}
@@ -123,17 +124,16 @@ export default function Dashboard() {
 
       {error && (
         <div className="px-4 py-3 rounded-xl text-sm mb-6"
-          style={{ background: 'rgba(255,100,100,0.08)', color: '#c0524e', border: '1px solid rgba(255,100,100,0.15)' }}>
+          style={{ background: 'var(--rv-error-bg)', color: 'var(--rv-error)', border: '1px solid var(--rv-error-border)' }}>
           {error}
         </div>
       )}
 
-      {/* Grid */}
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...Array(6)].map((_, i) => (
             <div key={i} className="rounded-2xl overflow-hidden animate-pulse"
-              style={{ background: 'rgba(255,255,255,0.6)', height: 260 }} />
+              style={{ background: 'var(--rv-card)', height: 260 }} />
           ))}
         </div>
       ) : spaces.length === 0 ? (
@@ -166,48 +166,47 @@ function SpaceCard({
   isDeleting: boolean;
 }) {
   const tags = [...(space.moodTags || []), ...(space.emotions || [])].slice(0, 3);
+  const coverSrc = space.coverImageUrl || space.images?.[0] || null;
 
   return (
     <div
       className="rounded-2xl overflow-hidden group transition-all duration-300 hover:-translate-y-1 hover:shadow-xl flex flex-col"
       style={{
-        background: 'rgba(255,255,255,0.85)',
+        background: 'var(--rv-card)',
         backdropFilter: 'blur(16px)',
-        border: '1px solid rgba(169,184,255,0.15)',
+        border: '1px solid var(--rv-border)',
         boxShadow: '0 4px 20px rgba(106,127,219,0.08)',
       }}
     >
       {/* Cover image */}
-      <div
-        className="h-40 relative overflow-hidden flex-shrink-0 cursor-pointer"
-        onClick={onView}
-        style={{
-          background: space.coverImageUrl
-            ? `url(${space.coverImageUrl}) center/cover no-repeat`
-            : 'linear-gradient(135deg, #EEF0FF 0%, #F6D6FF 100%)',
-        }}
-      >
-        {!space.coverImageUrl && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-4xl opacity-20" style={{ color: '#6A7FDB' }}>✦</span>
+      <div className="h-40 relative overflow-hidden flex-shrink-0 cursor-pointer" onClick={onView}>
+        {coverSrc
+          ? <img src={coverSrc} alt={space.title} className="w-full h-full object-cover" />
+          : (
+            <div className="w-full h-full flex items-center justify-center"
+              style={{ background: 'linear-gradient(135deg, #EEF0FF 0%, #F6D6FF 100%)' }}>
+              <span className="text-4xl opacity-20" style={{ color: '#6A7FDB' }}>✦</span>
+            </div>
+          )
+        }
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(44,44,62,0.45) 0%, transparent 50%)' }} />
+
+        {space.mood && (
+          <div className="absolute top-2.5 left-3">
+            <span className="text-xs px-2 py-0.5 rounded-full font-medium"
+              style={{ background: 'rgba(255,255,255,0.22)', backdropFilter: 'blur(8px)', color: 'white' }}>
+              {space.mood}
+            </span>
           </div>
         )}
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(44,44,62,0.45) 0%, transparent 50%)' }} />
+
         <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
-          <span
-            className="text-xs font-medium px-2 py-0.5 rounded-full capitalize"
-            style={{ background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)', color: 'white' }}
-          >
+          <span className="text-xs font-medium px-2 py-0.5 rounded-full capitalize"
+            style={{ background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)', color: 'white' }}>
             {space.category || 'uncategorized'}
           </span>
-          <span
-            className="text-xs px-2 py-0.5 rounded-full"
-            style={{
-              background: space.visibility === 'private' ? 'rgba(106,127,219,0.25)' : 'rgba(100,200,120,0.25)',
-              backdropFilter: 'blur(8px)',
-              color: 'white',
-            }}
-          >
+          <span className="text-xs px-2 py-0.5 rounded-full"
+            style={{ background: space.visibility === 'private' ? 'rgba(106,127,219,0.25)' : 'rgba(100,200,120,0.25)', backdropFilter: 'blur(8px)', color: 'white' }}>
             {space.visibility === 'private' ? '🔒 private' : '🌐 public'}
           </span>
         </div>
@@ -217,31 +216,29 @@ function SpaceCard({
       <div className="p-5 flex flex-col flex-1">
         <h3
           className="font-heading font-semibold text-base mb-1.5 leading-snug cursor-pointer hover:opacity-80 transition-opacity line-clamp-2"
-          style={{ color: '#2C2C3E' }}
+          style={{ color: 'var(--rv-text)' }}
           onClick={onView}
         >
           {space.title}
         </h3>
 
         {(space.description || space.reflection) && (
-          <p className="text-xs leading-relaxed mb-3 line-clamp-2" style={{ color: '#8B97B8' }}>
+          <p className="text-xs leading-relaxed mb-3 line-clamp-2" style={{ color: 'var(--rv-text-secondary)' }}>
             {space.description || space.reflection}
           </p>
         )}
 
-        {/* Tags */}
         {tags.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mb-3">
             {tags.map((tag) => (
               <span key={tag} className="text-xs px-2.5 py-0.5 rounded-full capitalize"
-                style={{ background: 'rgba(169,184,255,0.15)', color: '#6A7FDB' }}>
+                style={{ background: 'var(--rv-tag)', color: '#6A7FDB' }}>
                 {tag}
               </span>
             ))}
           </div>
         )}
 
-        {/* Color palette */}
         {space.colorPalette?.length > 0 && (
           <div className="flex gap-1.5 mb-3">
             {space.colorPalette.slice(0, 5).map((c, i) => (
@@ -251,27 +248,27 @@ function SpaceCard({
           </div>
         )}
 
-        <div className="flex items-center gap-1 text-xs mb-4 mt-auto" style={{ color: '#B0BBCC' }}>
-          {space.songLinks?.length > 0 && <span>♪ {space.songLinks.length} song{space.songLinks.length !== 1 ? 's' : ''}</span>}
-          {space.songLinks?.length > 0 && <span>·</span>}
+        <div className="flex items-center gap-2 text-xs mb-4 mt-auto flex-wrap" style={{ color: 'var(--rv-text-tertiary)' }}>
+          {space.audios?.length > 0 && <span>♫ {space.audios.length} audio</span>}
+          {space.songLinks?.length > 0 && <span>♪ {space.songLinks.length} link{space.songLinks.length !== 1 ? 's' : ''}</span>}
+          {(space.audios?.length > 0 || space.songLinks?.length > 0) && <span>·</span>}
           <span>{new Date(space.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
         </div>
 
-        {/* Actions */}
-        <div className="flex gap-2 pt-3" style={{ borderTop: '1px solid rgba(169,184,255,0.12)' }}>
+        <div className="flex gap-2 pt-3" style={{ borderTop: '1px solid var(--rv-border-divider)' }}>
           <button onClick={onView}
-            className="flex-1 py-2 rounded-xl text-xs font-medium transition-all hover:bg-indigo-50"
-            style={{ color: '#6A7FDB', border: '1px solid rgba(169,184,255,0.25)' }}>
+            className="flex-1 py-2 rounded-xl text-xs font-medium transition-all hover:opacity-80"
+            style={{ color: 'var(--rv-text-accent)', border: '1px solid var(--rv-border-inactive)' }}>
             View
           </button>
           <button onClick={onEdit}
-            className="flex-1 py-2 rounded-xl text-xs font-medium transition-all hover:bg-indigo-50"
-            style={{ color: '#6A7FDB', border: '1px solid rgba(169,184,255,0.25)' }}>
+            className="flex-1 py-2 rounded-xl text-xs font-medium transition-all hover:opacity-80"
+            style={{ color: 'var(--rv-text-accent)', border: '1px solid var(--rv-border-inactive)' }}>
             Edit
           </button>
           <button onClick={onDelete} disabled={isDeleting}
-            className="px-3 py-2 rounded-xl text-xs font-medium transition-all hover:bg-red-50 disabled:opacity-40"
-            style={{ color: '#c07070', border: '1px solid rgba(220,100,100,0.15)' }}>
+            className="px-3 py-2 rounded-xl text-xs font-medium transition-all hover:opacity-80 disabled:opacity-40"
+            style={{ color: 'var(--rv-danger)', border: '1px solid var(--rv-danger-border)' }}>
             {isDeleting ? '…' : 'Delete'}
           </button>
         </div>
@@ -283,16 +280,14 @@ function SpaceCard({
 function EmptyState({ category, search }: { category: string; search: string }) {
   return (
     <div className="flex flex-col items-center justify-center py-24 text-center">
-      <div
-        className="w-20 h-20 rounded-3xl flex items-center justify-center mb-6"
-        style={{ background: 'rgba(169,184,255,0.1)' }}
-      >
+      <div className="w-20 h-20 rounded-3xl flex items-center justify-center mb-6"
+        style={{ background: 'var(--rv-tag)' }}>
         <span className="text-3xl" style={{ color: '#A9B8FF' }}>✦</span>
       </div>
-      <h3 className="font-heading font-semibold text-xl mb-2" style={{ color: '#2C2C3E' }}>
+      <h3 className="font-heading font-semibold text-xl mb-2" style={{ color: 'var(--rv-text)' }}>
         {search || category !== 'All' ? 'No spaces found' : 'Your first mood space awaits'}
       </h3>
-      <p className="text-sm mb-8 max-w-xs" style={{ color: '#8B97B8' }}>
+      <p className="text-sm mb-8 max-w-xs" style={{ color: 'var(--rv-text-secondary)' }}>
         {search || category !== 'All'
           ? 'Try adjusting your search or filter.'
           : 'Create your first mood space — a private sanctuary for your emotions, memories, and music.'}

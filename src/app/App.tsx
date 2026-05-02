@@ -11,6 +11,9 @@ import CreateMoodSpace from './pages/CreateMoodSpace';
 import MoodDetail from './pages/MoodDetail';
 import EditMood from './pages/EditMood';
 import Profile from './pages/Profile';
+import Community from './pages/Community';
+import SavedSpaces from './pages/SavedSpaces';
+import Timeline from './pages/Timeline';
 
 function AppRoutes() {
   const { user, loading } = useAuth();
@@ -40,6 +43,9 @@ function AppRoutes() {
       <Route element={<ProtectedRoute />}>
         <Route element={<AppShell />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/community" element={<Community />} />
+          <Route path="/saved" element={<SavedSpaces />} />
+          <Route path="/timeline" element={<Timeline />} />
           <Route path="/create" element={<CreateMoodSpace />} />
           <Route path="/mood/:id" element={<MoodDetail />} />
           <Route path="/mood/:id/edit" element={<EditMood />} />

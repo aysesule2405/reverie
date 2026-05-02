@@ -23,6 +23,12 @@ export default defineConfig({
         target: 'http://localhost:5001',
         changeOrigin: true,
         secure: false,
+      },
+      // Proxy /uploads so the frontend can reach files served by Express
+      '/uploads': {
+        target: 'http://localhost:5001',
+        changeOrigin: true,
+        secure: false,
       }
     }
   },
