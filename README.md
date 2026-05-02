@@ -1,170 +1,248 @@
+# ✦ Reverie — Mood Space & Memory Curation Web App
 
-  # Reverie — full-stack Atmosphere app
+> A dreamy, full-stack web application where users create private mood spaces — saving soundtracks, reflections, emotions, color themes, and AI mood board prompts as living memories.
 
-Project overview
-----------------
+---
 
-- Title of Project: Reverie — a nostalgic atmosphere creator
-- Table Number: 13
+## Summary
 
-Elevator pitch
---------------
+Reverie is a personal sanctuary for emotional memory curation. Users register for a private account, then build **Mood Spaces** — richly detailed records of how a moment felt: the music playing, the colors in the air, the reflection only they can see. Built as a full-stack MERN application for a Back-End Web Development course.
 
-Rediscover emotional comfort through curated atmospheres — users sign up, craft moodscapes with images and song links, explore presets, and save favorites for gentle, nostalgic wellness.
+---
 
-What's your idea? (short tagline)
---------------------------------
+## Technologies Used
 
-Comfortable digital spaces to calm, focus, and reminisce.
+### Frontend
+| Technology | Purpose |
+|---|---|
+| React 18 + TypeScript | UI framework |
+| Vite 6 | Build tool & dev server |
+| React Router v7 | Client-side routing |
+| Tailwind CSS v4 | Utility-first styling |
+| Framer Motion | Animations |
+| Radix UI / shadcn | Accessible UI primitives |
 
-Built with (TECH STACK)
------------------------
+### Backend
+| Technology | Purpose |
+|---|---|
+| Node.js + Express 4 | REST API server |
+| MongoDB Atlas | Cloud document database |
+| Mongoose 7 | ODM & schema validation |
+| bcryptjs | Password hashing |
+| JSON Web Tokens (JWT) | Stateless authentication |
+| CORS | Cross-origin request handling |
+| dotenv | Environment variable management |
+| nodemon | Dev server auto-restart |
 
-- Frontend: React + Vite, TypeScript
-- Styling: Tailwind CSS + project UI components
-- Backend: Node.js + Express
-- Database: MongoDB Atlas (Mongoose ODM)
-- Auth: JWT-based auth (jsonwebtoken)
-- Dev tooling: Vite, nodemon, concurrently
+---
 
-Thumbnail image
----------------
+## Features
 
-Include a 3:2 JPG/PNG/GIF in the repo (recommended path: `/assets/thumbnail.jpg`) and reference it here. Example (replace with your file):
+- **User authentication** — sign up, log in, stay logged in via JWT (7-day expiry)
+- **Password security** — bcrypt-hashed passwords, never stored in plaintext
+- **Private mood spaces** — full CRUD (create, read, update, delete)
+- **Per-user data isolation** — each user only sees their own spaces
+- **Rich mood space fields:**
+  - Title, description, personal reflection
+  - Category, mood tags & emotion labels
+  - Cover image URL, gallery image URLs
+  - Soundtrack links (Spotify, YouTube, etc.)
+  - Color palette (up to 6 swatches)
+  - AI mood board prompt & result
+  - Public / private visibility toggle
+- **Responsive layout** — desktop sidebar + mobile hamburger navigation
+- **Profile management** — update display name and avatar URL
+- **Search & filter** — search by title, filter by category
+- **Form validation** — inline client-side and server-side error messages
+- **Dreamy design system** — Ghibli-inspired soft palette, glass-morphism cards, ambient aurora effects
 
-![Reverie thumbnail](/src/assets/573cbd7ceaaa6d73a84668028329e1776130e659.png)
+---
 
-About the project
------------------
+## Setup Instructions
 
-Track Category: Wellness / Mental Health / Experience Design
+### Prerequisites
+- Node.js ≥ 18
+- A free [MongoDB Atlas](https://www.mongodb.com/atlas) cluster
+- `npm` or `yarn`
 
-Inspiration
-- Inspired by gentle, nostalgic scenes (Ghibli-like landscapes) and the desire for small, calming digital rituals.
+### 1. Clone the repository
+```bash
+git clone <repo-url>
+cd reverie
+```
 
-What it does
-- Users can register and log in, create atmospheres (title, images, songs, tags), browse public presets, view details, favorite atmospheres, and manage their own creations.
+### 2. Install root dependencies
+```bash
+npm install
+```
 
-How we built it
-- Frontend: reused the existing Reverie component library and added pages and an Auth context to connect to a backend API.
-- Backend: Express + Mongoose provides secure endpoints for auth, atmospheres, and favorites. Seed data provides demo presets.
-- Audio: ambient sounds live in `/public/sounds/*` and are played on atmosphere entry.
+### 3. Install server dependencies
+```bash
+cd server
+npm install
+cd ..
+```
 
-Challenges we ran into
-- Managing asset import conventions across Vite and Figma exports required switching to local asset paths for reliability.
-- Browser autoplay restrictions for audio required gating playback on user gestures (we implemented a reliable, user-triggered play flow).
+### 4. Configure environment variables
 
-Accomplishments we’re proud of
-- Preserved the project's emotional UI/UX while converting it into a full-stack, demo-able app.
-- Small, production-style backend with authentication, seeded presets, and favorite management.
+**Server** — create `server/.env`:
+```env
+PORT=5001
+MONGO_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/reverie
+JWT_SECRET=your_super_secret_key_here
+CLIENT_URL=http://localhost:5173
+```
 
-What we learned
-- How to turn a design-first repo into a working full-stack prototype quickly.
-- Small UX details (audio, onboarding) matter for perceived polish.
+**Client** — create `.env` in the root (optional; Vite proxy handles local dev):
+```env
+VITE_API_BASE=http://localhost:5001/api
+```
 
-Video demo of project features & functionality
---------------------------------------------
+### 5. Run the app
 
-Upload a ~2-minute demo to YouTube and paste the link here:
+Run both client and server concurrently:
+```bash
+npm run dev:all
+```
 
-YouTube demo: [PASTE DEMO LINK HERE]
+Or separately:
+```bash
+# Terminal 1 — backend
+npm run dev:server
 
-Link to Source Code (MANDATORY)
---------------------------------
+# Terminal 2 — frontend
+npm run dev:client
+```
 
-Public repository: https://github.com/aysesule2405/reverie
+Open [http://localhost:5173](http://localhost:5173) in your browser.
 
-Participants
-------------
-- Full name (Team member 1)
-- Full name (Team member 2)
+### 6. (Optional) Seed the database
+```bash
+cd server
+npm run seed
+```
 
-Live Deployment (optional)
--------------------------
+---
 
-If you deploy the app, paste the URL here:
+## API Routes
 
-Live demo: [OPTIONAL DEPLOYMENT LINK]
+### Auth — `/api/auth`
 
-How to run locally (developer notes)
------------------------------------
+| Method | Route | Auth | Description |
+|---|---|---|---|
+| `POST` | `/api/auth/register` | — | Register a new user |
+| `POST` | `/api/auth/login` | — | Log in, receive JWT |
+| `GET` | `/api/auth/me` | ✓ | Get current user |
+| `PUT` | `/api/auth/profile` | ✓ | Update name & avatar |
 
-Prerequisites
-- Node.js (v18+) and npm
-- MongoDB Atlas or local MongoDB instance
+### Mood Spaces — `/api/atmospheres`
 
-Install & run
-1. Install frontend dependencies (repo root):
+| Method | Route | Auth | Description |
+|---|---|---|---|
+| `GET` | `/api/atmospheres` | — | List public spaces (add `?mine=true` for your own) |
+| `GET` | `/api/atmospheres/:id` | — | Get a single space |
+| `POST` | `/api/atmospheres` | ✓ | Create a mood space |
+| `PUT` | `/api/atmospheres/:id` | ✓ | Update a mood space (owner only) |
+| `DELETE` | `/api/atmospheres/:id` | ✓ | Delete a mood space (owner only) |
 
-   npm install
+**Query params for `GET /api/atmospheres`:**
+- `mine=true` — return the authenticated user's spaces (any visibility)
+- `category=cozy` — filter by category
+- `q=autumn` — search by title (case-insensitive)
 
-2. Install & configure server:
+### Favorites — `/api/favorites`
 
-   cd server
-   npm install
-   cp .env.example .env
-   # Edit server/.env and set MONGO_URI and JWT_SECRET (PORT defaults to 5001)
+| Method | Route | Auth | Description |
+|---|---|---|---|
+| `GET` | `/api/favorites` | ✓ | List user's favorited spaces |
+| `POST` | `/api/favorites/:atmosphereId` | ✓ | Add to favorites |
+| `DELETE` | `/api/favorites/:atmosphereId` | ✓ | Remove from favorites |
 
-3. Start backend (dev):
+---
 
-   cd server
-   npm run dev
+## Project Structure
 
-4. Start frontend (dev, opens browser):
+```
+reverie/
+├── index.html
+├── package.json            # Root: Vite + React dependencies
+├── vite.config.ts          # Vite config with /api proxy
+│
+├── src/
+│   ├── main.tsx            # React entry point
+│   ├── api/
+│   │   └── client.ts       # Fetch wrapper (auto-attaches JWT)
+│   ├── app/
+│   │   ├── App.tsx         # Router setup
+│   │   ├── AuthContext.tsx # Auth state & hooks
+│   │   ├── components/
+│   │   │   ├── layout/
+│   │   │   │   ├── AppShell.tsx       # Sidebar layout
+│   │   │   │   └── ProtectedRoute.tsx # Auth guard
+│   │   │   └── ui/                    # shadcn/Radix primitives
+│   │   └── pages/
+│   │       ├── Landing.tsx
+│   │       ├── Login.tsx
+│   │       ├── Signup.tsx
+│   │       ├── Dashboard.tsx
+│   │       ├── CreateMoodSpace.tsx
+│   │       ├── MoodDetail.tsx
+│   │       ├── EditMood.tsx
+│   │       └── Profile.tsx
+│   └── styles/
+│       ├── index.css       # Style imports
+│       ├── theme.css       # Ghibli-inspired design tokens
+│       ├── fonts.css       # Google Fonts
+│       └── tailwind.css    # Tailwind base
+│
+└── server/
+    ├── server.js           # Express entry point
+    ├── package.json        # Server dependencies
+    ├── config/
+    │   └── db.js           # MongoDB connection
+    ├── models/
+    │   ├── User.js
+    │   ├── Atmosphere.js   # Mood space schema
+    │   └── Favorite.js
+    ├── controllers/
+    │   ├── authController.js
+    │   ├── atmosphereController.js
+    │   └── favoriteController.js
+    ├── routes/
+    │   ├── authRoutes.js
+    │   ├── atmosphereRoutes.js
+    │   └── favoriteRoutes.js
+    ├── middleware/
+    │   ├── authMiddleware.js  # JWT verification
+    │   └── errorMiddleware.js
+    └── seed/
+        └── seedAtmospheres.js
+```
 
-   # in repo root
-   npm run dev:client
+---
 
-5. Or run both together:
+## Team / Contributions
 
-   npm run dev:all
+| Member | Contributions |
+|---|---|
+| **Ayse Sule** | Full-stack development — React frontend, Express/MongoDB backend, UI/UX design system, authentication, CRUD, deployment |
 
-Environment variables
-- server/.env (required):
-  - PORT=5001 (default)
-  - MONGO_URI=your_mongodb_atlas_connection_string
-  - JWT_SECRET=your_jwt_secret
-  - CLIENT_URL=http://localhost:5173
+---
 
-- root .env (optional):
-  - VITE_API_BASE=http://localhost:5001/api
+## Rubric Checklist
 
-Seed data
-- To populate demo atmospheres (demo user and presets):
+- [x] Node.js + Express backend
+- [x] MongoDB database (Atlas)
+- [x] User authentication with bcrypt-hashed passwords
+- [x] JWT-based session management
+- [x] Full CRUD routes for mood spaces
+- [x] Per-user data isolation (users only see their own spaces)
+- [x] Server-side and client-side form validation
+- [x] Clean error handling with meaningful messages
+- [x] Responsive design (desktop, tablet, mobile)
+- [x] Professional README with API docs and setup instructions
+- [x] Clean, organized, commented code
 
-  cd server
-  npm run seed
+---
 
-Notes
-- Audio autoplay may be blocked by browsers until the user interacts with the page — click "Begin" or enter an atmosphere to enable sounds.
-
-Judging checklist (make sure you include these before submission)
-- Project overview with table number (this file)
-- 2-minute YouTube demo link
-- Public Git repository link (this repository)
-- Team member full names listed above
-- README with run instructions (this file)
-
-Contact
--------
-If the judges or mentors need to reach the team, add a contact email here.
-
-
-Run both servers
----------------
-
-  To run frontend and backend together from the project root (recommended during development):
-
-    npm run dev:all
-
-  Notes about ports
-  - Backend: http://localhost:5001 (server default)
-  - Frontend: http://localhost:5173 (Vite)
-
-Alternatively run client and server separately in two terminals:
-
-  npm run dev:client
-  # in another terminal
-  npm run dev:server
-
-  
+*Designed with softness & care — Reverie ✦*
