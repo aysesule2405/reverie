@@ -35,6 +35,10 @@ const AtmosphereSchema = new mongoose.Schema(
     // The binary file lives on disk; MongoDB only stores the path string.
     images: [{ type: String }],   // local image uploads
     audios: [{ type: String }],   // local audio uploads
+    videos: [{ type: String }],   // local video uploads or external video URLs
+
+    // References to items in the user's personal media library
+    libraryItems: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MediaItem' }],
 
     // ── External links & palette ───────────────────────────────────────────
     coverImageUrl: { type: String, trim: true }, // remote cover image URL

@@ -30,6 +30,7 @@ app.use('/api/comments',    require('./routes/commentRoutes'));
 app.use('/api/favorites',   require('./routes/favoriteRoutes'));
 app.use('/api/community',   require('./routes/communityRoutes'));
 app.use('/api/profile',     require('./routes/profileRoutes'));
+app.use('/api/library',     require('./routes/libraryRoutes'));
 
 // ── Global error handler ──────────────────────────────────────────────────────
 app.use(require('./middleware/errorMiddleware'));

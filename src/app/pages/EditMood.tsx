@@ -1,9 +1,10 @@
-import React, { useEffect, useState, KeyboardEvent } from 'react';
+import React, { useEffect, useState, useRef, KeyboardEvent } from 'react';
 import { useParams, useNavigate, Link } from 'react-router';
 import { api } from '../../api/client';
 
 const CATEGORIES = ['cozy', 'dreamy', 'melancholic', 'joyful', 'nostalgic', 'energetic', 'calm', 'other'];
 const PRESET_COLORS = ['#6A7FDB', '#A9B8FF', '#F6D6FF', '#FFB8A3', '#D4E8F7', '#B5E3B8', '#FFEEAD', '#FFD6D6', '#C8F0E8', '#E8D6FF'];
+const VIDEO_ACCEPT = 'video/mp4,video/webm,video/quicktime';
 
 export default function EditMood() {
   const { id } = useParams<{ id: string }>();
@@ -25,6 +26,11 @@ export default function EditMood() {
   const [colorPalette, setColorPalette] = useState<string[]>([]);
   const [aiPrompt, setAiPrompt] = useState('');
 
+  // ── Video state ──
+  const [existingVideos, setExistingVideos] = useState<string[]>([]);
+  const [newVideoFiles, setNewVideoFiles] = useState<File[]>([]);
+  const videoInputRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     if (!id) return;
     api.get(`/atmospheres/${id}`)
@@ -39,6 +45,7 @@ export default function EditMood() {
         setSongLinks(data.songLinks || []);
         setColorPalette(data.colorPalette || []);
         setAiPrompt(data.aiPrompt || '');
+        setExistingVideos(data.videos || []);
       })
       .catch(() => setError('Could not load this mood space.'))
       .finally(() => setLoading(false));
@@ -55,13 +62,37 @@ export default function EditMood() {
   const toggleColor = (c: string) =>
     setColorPalette((p) => p.includes(c) ? p.filter((x) => x !== c) : p.length < 6 ? [...p, c] : p);
 
+  const removeExistingVideo = (url: string) =>
+    setExistingVideos((prev) => prev.filter((v) => v !== url));
+
+  const onVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    setNewVideoFiles((prev) => [...prev, ...Array.from(e.target.files!)].slice(0, 3));
+  };
+  const removeNewVideo = (index: number) => setNewVideoFiles((p) => p.filter((_, i) => i !== index));
+
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     if (!title.trim()) { setError('A title is required'); return; }
     setError('');
     setSaving(true);
     try {
-      await api.put(`/atmospheres/${id}`, { title: title.trim(), description: description.trim(), reflection: reflection.trim(), category, visibility, coverImageUrl: coverImageUrl.trim(), moodTags, songLinks, colorPalette, aiPrompt: aiPrompt.trim() });
+      const form = new FormData();
+      form.append('title', title.trim());
+      form.append('description', description.trim());
+      form.append('reflection', reflection.trim());
+      form.append('category', category);
+      form.append('visibility', visibility);
+      form.append('coverImageUrl', coverImageUrl.trim());
+      form.append('aiPrompt', aiPrompt.trim());
+      form.append('moodTags', JSON.stringify(moodTags));
+      form.append('songLinks', JSON.stringify(songLinks));
+      form.append('colorPalette', JSON.stringify(colorPalette));
+      // Tell the backend exactly which existing videos to keep (deletions excluded)
+      form.append('keepVideos', JSON.stringify(existingVideos));
+      newVideoFiles.forEach((f) => form.append('videos', f));
+
+      await api.putForm(`/atmospheres/${id}`, form);
       navigate(`/mood/${id}`);
     } catch (e: any) {
       setError(e.message || 'Could not save changes. Please try again.');
@@ -168,6 +199,64 @@ export default function EditMood() {
                 </span>
               ))}
             </div>
+          )}
+        </FormSection>
+
+        {/* ── Video management ── */}
+        <FormSection title="Videos">
+          {/* Existing saved videos */}
+          {existingVideos.length > 0 && (
+            <div className="mb-5">
+              <FieldLabel>Saved videos <span style={{ color: 'var(--rv-text-tertiary)' }}>(click × to remove)</span></FieldLabel>
+              <ul className="space-y-3">
+                {existingVideos.map((url, i) => {
+                  const name = url.split('/').pop()?.replace(/^\d+-\d+-/, '') ?? `Video ${i + 1}`;
+                  return (
+                    <li key={url} className="rounded-2xl overflow-hidden"
+                      style={{ border: '1px solid var(--rv-border)' }}>
+                      <video
+                        src={url}
+                        controls
+                        className="w-full"
+                        style={{ maxHeight: 220, background: '#000', display: 'block' }}
+                      />
+                      <div className="flex items-center gap-3 px-4 py-2.5"
+                        style={{ background: 'var(--rv-user-card)' }}>
+                        <span style={{ color: '#A9B8FF', fontSize: 12 }}>▶</span>
+                        <span className="text-sm flex-1 truncate" style={{ color: 'var(--rv-text-label)' }}>{name}</span>
+                        <button type="button" onClick={() => removeExistingVideo(url)}
+                          className="text-xs px-2.5 py-1 rounded-lg hover:opacity-80 flex-shrink-0"
+                          style={{ color: 'var(--rv-danger)', border: '1px solid var(--rv-danger-border)' }}>
+                          Remove
+                        </button>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
+
+          {/* Upload new videos */}
+          <FieldLabel>Upload new videos <span style={{ color: 'var(--rv-text-tertiary)' }}>(max 3 · mp4/webm/mov)</span></FieldLabel>
+          <input ref={videoInputRef} type="file" accept={VIDEO_ACCEPT} multiple className="hidden" onChange={onVideoChange} />
+          <button type="button" onClick={() => videoInputRef.current?.click()}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all hover:opacity-80"
+            style={{ background: 'var(--rv-tag)', color: '#6A7FDB', border: '1.5px dashed rgba(169,184,255,0.4)' }}>
+            <span>▶</span> Choose Videos
+          </button>
+          {newVideoFiles.length > 0 && (
+            <ul className="mt-3 space-y-2">
+              {newVideoFiles.map((f, i) => (
+                <li key={i} className="flex items-center gap-3 px-4 py-2.5 rounded-xl"
+                  style={{ background: 'var(--rv-user-card)', border: '1px solid var(--rv-border)' }}>
+                  <span style={{ color: '#A9B8FF' }}>▶</span>
+                  <span className="text-sm flex-1 truncate" style={{ color: 'var(--rv-text-label)' }}>{f.name}</span>
+                  <span className="text-xs flex-shrink-0" style={{ color: 'var(--rv-text-tertiary)' }}>{(f.size / 1024 / 1024).toFixed(1)} MB</span>
+                  <button type="button" onClick={() => removeNewVideo(i)} className="text-xs hover:text-red-400 flex-shrink-0" style={{ color: 'var(--rv-text-tertiary)' }}>×</button>
+                </li>
+              ))}
+            </ul>
           )}
         </FormSection>
 

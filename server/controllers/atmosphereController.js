@@ -91,7 +91,9 @@ exports.list = async (req, res, next) => {
 // ── GET /api/atmospheres/:id ──────────────────────────────────────────────────
 exports.get = async (req, res, next) => {
   try {
-    const item = await Atmosphere.findById(req.params.id).populate('user', 'name avatarUrl');
+    const item = await Atmosphere.findById(req.params.id)
+      .populate('user', 'name avatarUrl')
+      .populate('libraryItems');
     if (!item) return res.status(404).json({ message: 'Mood space not found' });
 
     // Block access to private spaces by non-owners
@@ -139,18 +141,21 @@ exports.create = async (req, res, next) => {
     }
 
     // Arrays may arrive as JSON strings when sent via FormData
-    const moodTags    = parseArrayField(req.body.moodTags);
-    const emotions    = parseArrayField(req.body.emotions);
-    const songLinks   = parseArrayField(req.body.songLinks);
+    const moodTags     = parseArrayField(req.body.moodTags);
+    const emotions     = parseArrayField(req.body.emotions);
+    const songLinks    = parseArrayField(req.body.songLinks);
     const colorPalette = parseArrayField(req.body.colorPalette);
-    const imageUrls   = parseArrayField(req.body.imageUrls);
+    const imageUrls    = parseArrayField(req.body.imageUrls);
+    const videos       = parseArrayField(req.body.videos);
+    const libraryItems = parseArrayField(req.body.libraryItems);
 
     // Extract paths for locally uploaded files (from multer)
     const uploadedImages = extractFilePaths(req.files, 'images', 'images');
     const uploadedAudios = extractFilePaths(req.files, 'audios', 'audio');
+    const uploadedVideos = extractFilePaths(req.files, 'videos', 'videos');
 
     const data = {
-      user: req.user._id,           // link to the logged-in user
+      user: req.user._id,
       title: title.trim(),
       mood: mood ? mood.trim() : undefined,
       description: description ? description.trim() : undefined,
@@ -163,10 +168,13 @@ exports.create = async (req, res, next) => {
       songLinks,
       colorPalette,
       imageUrls,
+      // Merge body video URLs (external) with locally uploaded video paths
+      videos: [...videos, ...uploadedVideos],
+      libraryItems,
       aiPrompt: aiPrompt ? aiPrompt.trim() : undefined,
       aiResult: aiResult ? aiResult.trim() : undefined,
-      images: uploadedImages,  // local upload paths
-      audios: uploadedAudios,  // local upload paths
+      images: uploadedImages,
+      audios: uploadedAudios,
     };
 
     const created = await Atmosphere.create(data);
@@ -213,8 +221,17 @@ exports.update = async (req, res, next) => {
     // Append any newly uploaded files (don't erase existing ones)
     const newImages = extractFilePaths(req.files, 'images', 'images');
     const newAudios = extractFilePaths(req.files, 'audios', 'audio');
+    const newVideos = extractFilePaths(req.files, 'videos', 'videos');
     if (newImages.length) item.images = [...(item.images || []), ...newImages];
     if (newAudios.length) item.audios = [...(item.audios || []), ...newAudios];
+
+    // keepVideos: explicit list of existing video URLs to retain (sent by edit form).
+    // If provided, replace item.videos with that list, then append newly uploaded files.
+    // This is how individual video deletion from the edit form works.
+    if (req.body.keepVideos !== undefined) {
+      item.videos = parseArrayField(req.body.keepVideos);
+    }
+    if (newVideos.length) item.videos = [...(item.videos || []), ...newVideos];
 
     await item.save();
     res.json(item);

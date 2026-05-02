@@ -1,12 +1,12 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
-import { useAuth, type BackgroundMusic } from './AuthContext';
+import { useAuth, type PlaylistTrack } from './AuthContext';
 
-export type Track = BackgroundMusic;
+export type Track = PlaylistTrack;
 
 interface AmbientContextValue {
   track: Track | null;
   playing: boolean;
-  volume: number;     // 0–1
+  volume: number;
   loop: boolean;
   play: () => void;
   pause: () => void;
@@ -25,20 +25,18 @@ const AmbientContext = createContext<AmbientContextValue>({
 
 export const useAmbient = () => useContext(AmbientContext);
 
-// localStorage keys
-const LS_TRACK  = 'rv-ambient-track';
-const LS_VOL    = 'rv-ambient-vol';
-const LS_LOOP   = 'rv-ambient-loop';
+const LS_TRACK = 'rv-ambient-track';
+const LS_VOL   = 'rv-ambient-vol';
+const LS_LOOP  = 'rv-ambient-loop';
 
 export function AmbientPlayerProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
 
-  // Restore track from localStorage; fall back to user.backgroundMusic from the server
   const [track, setTrackState] = useState<Track | null>(() => {
     try {
       const saved = localStorage.getItem(LS_TRACK);
       if (saved) return JSON.parse(saved) as Track;
-    } catch { /* ignore corrupt localStorage */ }
+    } catch { /* ignore */ }
     return null;
   });
 
@@ -54,16 +52,13 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
     return saved !== null ? saved === 'true' : true;
   });
 
-  // The actual HTML5 Audio element lives here for the component's lifetime
   const audioRef = useRef<HTMLAudioElement>(new Audio());
 
-  // Sync volume and loop to the audio element whenever they change
   useEffect(() => {
     audioRef.current.volume = volume;
     audioRef.current.loop   = loop;
   }, [volume, loop]);
 
-  // When the track changes, load the new source into the audio element
   useEffect(() => {
     const audio = audioRef.current;
     if (track?.url) {
@@ -76,16 +71,25 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
     }
   }, [track]);
 
-  // If no track in localStorage but the user has a saved preference on the server,
-  // use that as the initial track (happens after login on a fresh device).
+  // Fall back to server's activeBackgroundTrack on fresh login (no localStorage track)
   useEffect(() => {
-    if (user?.backgroundMusic && !localStorage.getItem(LS_TRACK)) {
-      setTrackState(user.backgroundMusic);
+    if (user?.activeBackgroundTrack?.url && !localStorage.getItem(LS_TRACK)) {
+      setTrackState(user.activeBackgroundTrack);
+    }
+    // Sync volume/loop from server when no local preference exists
+    if (user?.musicSettings) {
+      if (!localStorage.getItem(LS_VOL)) {
+        setVolumeState(user.musicSettings.volume);
+        audioRef.current.volume = user.musicSettings.volume;
+      }
+      if (!localStorage.getItem(LS_LOOP)) {
+        setLoopState(user.musicSettings.loop);
+        audioRef.current.loop = user.musicSettings.loop;
+      }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.backgroundMusic?.url]);
+  }, [user?.activeBackgroundTrack?.url]);
 
-  // Clean up audio when this provider unmounts (user logs out → AppShell unmounts)
   useEffect(() => {
     return () => {
       audioRef.current.pause();
@@ -97,7 +101,7 @@ export function AmbientPlayerProvider({ children }: { children: React.ReactNode 
     if (!track?.url) return;
     audioRef.current.play()
       .then(() => setPlaying(true))
-      .catch(() => { /* browser may block autoplay — user must interact first */ });
+      .catch(() => { /* autoplay blocked — user must interact first */ });
   };
 
   const pause = () => {

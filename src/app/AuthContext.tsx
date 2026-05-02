@@ -1,11 +1,16 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { api } from '../api/client';
 
-export interface BackgroundMusic {
-  type: 'default' | 'upload' | 'external';
+export interface PlaylistTrack {
+  _id?: string;
   name: string;
+  type: 'default' | 'upload' | 'external';
   url: string;
+  createdAt?: string;
 }
+
+// Kept for backward compatibility with AmbientPlayerContext
+export type BackgroundMusic = PlaylistTrack;
 
 export interface MusicSettings {
   volume: number;
@@ -15,8 +20,6 @@ export interface MusicSettings {
 export interface ProfileUpdateData {
   name: string;
   avatarUrl?: string;
-  backgroundMusic?: BackgroundMusic | null;
-  musicSettings?: MusicSettings;
 }
 
 type User = {
@@ -24,7 +27,8 @@ type User = {
   name: string;
   email: string;
   avatarUrl?: string;
-  backgroundMusic?: BackgroundMusic;
+  backgroundMusicPlaylist?: PlaylistTrack[];
+  activeBackgroundTrack?: PlaylistTrack | null;
   musicSettings?: MusicSettings;
 } | null;
 
@@ -78,15 +82,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(res.user);
   };
 
-  // Re-fetch the current user from /auth/me to sync any server-side changes
-  // (e.g. after a profile photo upload or music preference update).
   const refreshUser = async () => {
     const res = await api.get('/auth/me');
     setUser(res.user);
   };
 
-  // Calls the comprehensive /api/profile endpoint which handles name, avatarUrl,
-  // backgroundMusic, and musicSettings in one request.
   const updateProfile = async (data: ProfileUpdateData) => {
     const res = await api.put('/profile', data);
     setUser(res.user);

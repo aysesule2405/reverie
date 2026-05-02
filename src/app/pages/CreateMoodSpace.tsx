@@ -1,6 +1,14 @@
-import React, { useState, useRef, KeyboardEvent } from 'react';
+import React, { useState, useRef, useEffect, useCallback, KeyboardEvent } from 'react';
 import { useNavigate, Link } from 'react-router';
 import { api } from '../../api/client';
+import { Library, Check, Image as ImageIcon, Music, Film, X, ChevronDown, ChevronUp } from 'lucide-react';
+
+interface LibraryMediaItem {
+  _id: string;
+  title: string;
+  type: 'image' | 'video' | 'audio';
+  url: string;
+}
 
 const MOODS = [
   { value: 'peaceful',    label: '🌿 Peaceful' },
@@ -38,8 +46,11 @@ export default function CreateMoodSpace() {
   const [aiPrompt, setAiPrompt]       = useState('');
   const [imageFiles, setImageFiles]   = useState<File[]>([]);
   const [audioFiles, setAudioFiles]   = useState<File[]>([]);
+  const [videoFiles, setVideoFiles]   = useState<File[]>([]);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const audioInputRef = useRef<HTMLInputElement>(null);
+  const videoInputRef = useRef<HTMLInputElement>(null);
+  const [selectedLibraryIds, setSelectedLibraryIds] = useState<string[]>([]);
   const [error, setSError]   = useState('');
   const [saving, setSaving] = useState(false);
 
@@ -66,6 +77,12 @@ export default function CreateMoodSpace() {
   };
   const removeAudio = (index: number) => setAudioFiles((p) => p.filter((_, i) => i !== index));
 
+  const onVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    setVideoFiles((prev) => [...prev, ...Array.from(e.target.files!)].slice(0, 3));
+  };
+  const removeVideo = (index: number) => setVideoFiles((p) => p.filter((_, i) => i !== index));
+
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     if (!title.trim()) { setSError('A title is required'); return; }
@@ -82,11 +99,13 @@ export default function CreateMoodSpace() {
       form.append('visibility', visibility);
       form.append('coverImageUrl', coverImageUrl.trim());
       form.append('aiPrompt', aiPrompt.trim());
-      form.append('moodTags',    JSON.stringify(moodTags));
-      form.append('songLinks',   JSON.stringify(songLinks));
-      form.append('colorPalette', JSON.stringify(colorPalette));
+      form.append('moodTags',      JSON.stringify(moodTags));
+      form.append('songLinks',     JSON.stringify(songLinks));
+      form.append('colorPalette',  JSON.stringify(colorPalette));
+      form.append('libraryItems',  JSON.stringify(selectedLibraryIds));
       imageFiles.forEach((f) => form.append('images', f));
       audioFiles.forEach((f) => form.append('audios', f));
+      videoFiles.forEach((f) => form.append('videos', f));
       await api.postForm('/atmospheres', form);
       navigate('/dashboard');
     } catch (e: any) {
@@ -280,6 +299,29 @@ export default function CreateMoodSpace() {
           </div>
         </FormSection>
 
+        <FormSection title="Video">
+          <FieldLabel>Upload video files <span style={{ color: 'var(--rv-text-tertiary)' }}>(max 3 · mp4/webm/mov · 200 MB each)</span></FieldLabel>
+          <input ref={videoInputRef} type="file" accept="video/mp4,video/webm,video/quicktime" multiple className="hidden" onChange={onVideoChange} />
+          <button type="button" onClick={() => videoInputRef.current?.click()}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all hover:opacity-80"
+            style={{ background: 'var(--rv-tag)', color: '#6A7FDB', border: '1.5px dashed rgba(169,184,255,0.4)' }}>
+            <span>▶</span> Choose Videos
+          </button>
+          {videoFiles.length > 0 && (
+            <ul className="mt-3 space-y-2">
+              {videoFiles.map((f, i) => (
+                <li key={i} className="flex items-center gap-3 px-4 py-2.5 rounded-xl"
+                  style={{ background: 'var(--rv-user-card)', border: '1px solid var(--rv-border)' }}>
+                  <span style={{ color: '#A9B8FF' }}>▶</span>
+                  <span className="text-sm flex-1 truncate" style={{ color: 'var(--rv-text-label)' }}>{f.name}</span>
+                  <span className="text-xs flex-shrink-0" style={{ color: 'var(--rv-text-tertiary)' }}>{(f.size / 1024 / 1024).toFixed(1)} MB</span>
+                  <button type="button" onClick={() => removeVideo(i)} className="text-xs hover:text-red-400 flex-shrink-0" style={{ color: 'var(--rv-text-tertiary)' }}>×</button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </FormSection>
+
         <FormSection title="Color Palette">
           <FieldLabel>Pick up to 6 colors that capture this mood</FieldLabel>
           <div className="flex flex-wrap gap-3 mt-2">
@@ -295,6 +337,21 @@ export default function CreateMoodSpace() {
               {colorPalette.map((c, i) => <div key={i} className="w-5 h-5 rounded-full" style={{ background: c, border: '1.5px solid white' }} />)}
             </div>
           )}
+        </FormSection>
+
+        <FormSection title="Media Library">
+          <FieldLabel>Select from your personal media library</FieldLabel>
+          <p className="text-xs mb-4" style={{ color: 'var(--rv-text-tertiary)' }}>
+            Images and audio you pick here will be linked to this mood space.
+          </p>
+          <LibraryPicker
+            selectedIds={selectedLibraryIds}
+            onToggle={(id) =>
+              setSelectedLibraryIds((prev) =>
+                prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+              )
+            }
+          />
         </FormSection>
 
         <FormSection title="AI Mood Board">
@@ -344,6 +401,120 @@ function StyledInput({ value, onChange, placeholder }: { value: string; onChange
       style={{ background: 'var(--rv-input)', border: '1.5px solid var(--rv-border-input)', color: 'var(--rv-text)' }}
       onFocus={(e) => { e.target.style.borderColor = '#6A7FDB'; e.target.style.boxShadow = '0 0 0 3px rgba(106,127,219,0.1)'; }}
       onBlur={(e) => { e.target.style.borderColor = 'var(--rv-border-input)'; e.target.style.boxShadow = 'none'; }} />
+  );
+}
+
+function LibraryPicker({ selectedIds, onToggle }: { selectedIds: string[]; onToggle: (id: string) => void }) {
+  const [items, setItems] = useState<LibraryMediaItem[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [typeFilter, setTypeFilter] = useState<'all' | 'image' | 'audio'>('all');
+
+  const load = useCallback(async () => {
+    if (items.length) return; // already loaded
+    setLoading(true);
+    try {
+      const data = await api.get('/library');
+      setItems(data);
+    } catch { /* ignore */ }
+    finally { setLoading(false); }
+  }, [items.length]);
+
+  const handleOpen = () => {
+    setOpen((o) => !o);
+    if (!open) load();
+  };
+
+  const visible = items.filter((i) => typeFilter === 'all' || i.type === typeFilter);
+
+  const TYPE_ICON: Record<string, React.FC<{ size: number }>> = { image: ImageIcon, audio: Music, video: Film };
+
+  return (
+    <div>
+      <button type="button" onClick={handleOpen}
+        className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all hover:opacity-80 mb-3"
+        style={{ background: 'var(--rv-tag)', color: '#6A7FDB', border: '1.5px dashed rgba(169,184,255,0.4)' }}>
+        <Library size={15} />
+        {open ? 'Hide Library' : 'Browse Library'}
+        {selectedIds.length > 0 && (
+          <span className="ml-1 px-2 py-0.5 rounded-full text-xs" style={{ background: '#6A7FDB', color: 'white' }}>
+            {selectedIds.length} selected
+          </span>
+        )}
+        {open ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+      </button>
+
+      {open && (
+        <div className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--rv-border)' }}>
+          {/* Type tabs */}
+          <div className="flex gap-1 p-3" style={{ borderBottom: '1px solid var(--rv-border)' }}>
+            {(['all', 'image', 'audio'] as const).map((t) => (
+              <button key={t} type="button" onClick={() => setTypeFilter(t)}
+                className="px-3 py-1.5 rounded-lg text-xs font-medium capitalize transition-all"
+                style={typeFilter === t
+                  ? { background: '#6A7FDB', color: 'white' }
+                  : { background: 'var(--rv-inactive-btn)', color: 'var(--rv-text-soft)' }
+                }>{t === 'all' ? 'All' : t + 's'}</button>
+            ))}
+          </div>
+
+          {loading ? (
+            <div className="p-6 text-center text-sm" style={{ color: 'var(--rv-text-muted)' }}>Loading library…</div>
+          ) : visible.length === 0 ? (
+            <div className="p-6 text-center">
+              <p className="text-sm" style={{ color: 'var(--rv-text-muted)' }}>
+                No items found. <Link to="/library" className="underline" style={{ color: '#6A7FDB' }}>Upload to library →</Link>
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 p-3">
+              {visible.map((item) => {
+                const selected = selectedIds.includes(item._id);
+                const Icon = TYPE_ICON[item.type] || ImageIcon;
+                return (
+                  <button key={item._id} type="button" onClick={() => onToggle(item._id)}
+                    className="relative rounded-xl overflow-hidden transition-all hover:opacity-80"
+                    style={{
+                      aspectRatio: '1',
+                      border: selected ? '2.5px solid #6A7FDB' : '2px solid transparent',
+                      background: 'var(--rv-tag)',
+                      boxShadow: selected ? '0 0 0 2px rgba(106,127,219,0.2)' : 'none',
+                    }}>
+                    {item.type === 'image' && (
+                      <img src={item.url} alt={item.title} className="w-full h-full object-cover" />
+                    )}
+                    {item.type !== 'image' && (
+                      <div className="w-full h-full flex flex-col items-center justify-center gap-1">
+                        <Icon size={20} />
+                        <span className="text-xs text-center px-1 leading-tight line-clamp-2" style={{ color: 'var(--rv-text-muted)' }}>{item.title}</span>
+                      </div>
+                    )}
+                    {selected && (
+                      <div className="absolute inset-0 flex items-center justify-center"
+                        style={{ background: 'rgba(106,127,219,0.35)' }}>
+                        <Check size={20} style={{ color: 'white' }} />
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {selectedIds.length > 0 && (
+            <div className="px-3 py-2 flex items-center justify-between"
+              style={{ borderTop: '1px solid var(--rv-border)', background: 'var(--rv-tag)' }}>
+              <span className="text-xs" style={{ color: '#6A7FDB' }}>{selectedIds.length} item{selectedIds.length !== 1 ? 's' : ''} selected</span>
+              <button type="button" onClick={() => selectedIds.forEach(onToggle)}
+                className="text-xs flex items-center gap-1 hover:opacity-60"
+                style={{ color: 'var(--rv-text-muted)' }}>
+                <X size={11} /> Clear
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   );
 }
 

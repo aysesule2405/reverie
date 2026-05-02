@@ -55,12 +55,13 @@ exports.me = async (req, res, next) => {
     const user = await User.findById(req.user._id).select('-password');
     res.json({
       user: {
-        id:              user._id,
-        name:            user.name,
-        email:           user.email,
-        avatarUrl:       user.avatarUrl,
-        backgroundMusic: user.backgroundMusic,
-        musicSettings:   user.musicSettings,
+        id:                      user._id,
+        name:                    user.name,
+        email:                   user.email,
+        avatarUrl:               user.avatarUrl,
+        backgroundMusicPlaylist: user.backgroundMusicPlaylist || [],
+        activeBackgroundTrack:   user.activeBackgroundTrack   || null,
+        musicSettings:           user.musicSettings           || { volume: 0.5, loop: true },
       },
     });
   } catch (err) {

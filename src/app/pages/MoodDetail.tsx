@@ -24,6 +24,7 @@ interface MoodSpace {
   images: string[];
   imageUrls: string[];
   audios: string[];
+  videos?: string[];
   songLinks: string[];
   colorPalette: string[];
   aiPrompt?: string;
@@ -377,6 +378,32 @@ export default function MoodDetail() {
               ))}
             </div>
             <p className="text-xs mt-2" style={{ color: 'var(--rv-text-tertiary)' }}>Click an image to enlarge</p>
+          </Section>
+        )}
+
+        {space.videos && space.videos.length > 0 && (
+          <Section icon="▶" title={`Videos (${space.videos.length})`}>
+            <ul className="space-y-4">
+              {space.videos.map((src, i) => {
+                const filename = src.split('/').pop()?.replace(/^\d+-\d+-/, '') ?? `Video ${i + 1}`;
+                return (
+                  <li key={i} className="rounded-2xl p-4"
+                    style={{ background: 'var(--rv-section-bg)', border: '1px solid var(--rv-border)' }}>
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
+                        style={{ background: 'linear-gradient(135deg, #6A7FDB, #A9B8FF)' }}>
+                        <span className="text-white text-xs">▶</span>
+                      </div>
+                      <span className="text-sm font-medium truncate" style={{ color: 'var(--rv-text-label)' }}>{filename}</span>
+                    </div>
+                    <video controls src={src} className="w-full rounded-xl"
+                      style={{ maxHeight: '360px', background: '#000' }}>
+                      Your browser does not support video playback.
+                    </video>
+                  </li>
+                );
+              })}
+            </ul>
           </Section>
         )}
 

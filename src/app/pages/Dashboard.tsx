@@ -17,6 +17,7 @@ interface MoodSpace {
   colorPalette: string[];
   songLinks: string[];
   audios: string[];
+  videos?: string[];
   visibility: 'public' | 'private';
   createdAt: string;
 }
@@ -249,9 +250,10 @@ function SpaceCard({
         )}
 
         <div className="flex items-center gap-2 text-xs mb-4 mt-auto flex-wrap" style={{ color: 'var(--rv-text-tertiary)' }}>
+          {space.videos && space.videos.length > 0 && <span>▶ {space.videos.length} video{space.videos.length !== 1 ? 's' : ''}</span>}
           {space.audios?.length > 0 && <span>♫ {space.audios.length} audio</span>}
           {space.songLinks?.length > 0 && <span>♪ {space.songLinks.length} link{space.songLinks.length !== 1 ? 's' : ''}</span>}
-          {(space.audios?.length > 0 || space.songLinks?.length > 0) && <span>·</span>}
+          {((space.videos?.length ?? 0) > 0 || (space.audios?.length ?? 0) > 0 || (space.songLinks?.length ?? 0) > 0) && <span>·</span>}
           <span>{new Date(space.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
         </div>
 

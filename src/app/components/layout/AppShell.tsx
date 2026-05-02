@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router';
-import { Sun, Moon, Bookmark, Clock } from 'lucide-react';
+import { Sun, Moon, Bookmark, Clock, Library } from 'lucide-react';
 import { useAuth } from '../../AuthContext';
 import { useTheme } from '../../ThemeContext';
 import { getLogoByTheme } from '../../../assets/logos';
@@ -102,6 +102,7 @@ export default function AppShell() {
           <SidebarLink to="/community" icon="✧"                      label="Community"  onClick={() => setMobileOpen(false)} />
           <SidebarLink to="/saved"     icon={<Bookmark size={15} />} label="Saved"      onClick={() => setMobileOpen(false)} />
           <SidebarLink to="/timeline"  icon={<Clock size={15} />}    label="Timeline"   onClick={() => setMobileOpen(false)} />
+          <SidebarLink to="/library"   icon={<Library size={15} />}  label="Library"    onClick={() => setMobileOpen(false)} />
           <SidebarLink to="/create"    icon="✦"                      label="Create New" onClick={() => setMobileOpen(false)} />
           <SidebarLink to="/profile"   icon="◉"                      label="Profile"    onClick={() => setMobileOpen(false)} />
         </nav>
