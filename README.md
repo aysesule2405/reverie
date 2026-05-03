@@ -12,7 +12,17 @@
 
 ## Description
 
-Reverie is a mood space and memory curation web application where users can create personalized emotional environments using music, visuals, videos, and reflections. It allows users to organize moods, store memories, and explore both private and public mood spaces in a calm and immersive digital space. Built as a full-stack MERN application for a Back-End Web Development course.
+Reverie is a mood space and memory curation web application where users can create personalized emotional environments using music, visuals, videos, and reflections. It allows users to organize moods, store memories, and explore both private and public mood spaces in a calm and immersive digital space.
+
+This project was built as a full-stack MERN application for a Back-End Web Development course. The main goal was to create a web app that includes user authentication, database storage, CRUD functionality, file uploads, protected user data, and a responsive interface.
+
+---
+
+## Why I Built This
+
+I built Reverie because many people save their feelings, favorite songs, images, videos, and personal memories in separate places. Reverie brings these pieces together into one organized and expressive space. Instead of being only a journal, playlist, or mood board app, Reverie combines emotional reflection, media organization, and community sharing in one web application.
+
+The purpose of the project was also to practice building a complete full-stack application with a real backend, database connection, authentication system, API routes, and media upload features.
 
 ---
 
@@ -120,7 +130,7 @@ Reverie is a mood space and memory curation web application where users can crea
 ### 1. Clone the repository
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/aysesule2405/reverie.git
 cd reverie
 ```
 
@@ -167,6 +177,15 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ```bash
 cd server && npm run seed
+```
+
+### Deployment
+
+If the project is deployed, add the live link here:
+
+```text
+Live App: Add deployment link here
+GitHub Repository: https://github.com/aysesule2405/reverie
 ```
 
 ---
@@ -335,6 +354,43 @@ reverie/
 
 ---
 
+## Team Members
+
+- Ayse Sule Ekiz — Full-stack development, UI/UX design, authentication, CRUD functionality, file uploads, database integration, and presentation preparation.
+
+---
+
+## Challenges & Learning
+
+One of the main challenges was turning the original mobile-focused idea into a responsive desktop web application while keeping the dreamy Reverie visual identity. Another challenge was connecting the React frontend with the Express backend and making sure protected user data worked correctly through JWT authentication.
+
+I also worked through challenges with file uploads, user-specific data, public versus private mood spaces, and organizing backend routes, controllers, models, and middleware in a clean way.
+
+Through this project, I learned how to:
+
+- Build a full-stack MERN web application
+- Connect a React frontend to an Express backend
+- Use MongoDB Atlas and Mongoose for database storage
+- Create authentication with JWT and bcrypt-hashed passwords
+- Build protected routes and per-user data access
+- Implement CRUD operations for user-created content
+- Handle image, audio, and video uploads with Multer
+- Improve responsive design for desktop, tablet, and mobile screens
+
+---
+
+## Future Improvements
+
+- Add AI-generated mood boards based on user prompts
+- Integrate Spotify or another music API for richer soundtrack features
+- Add drag-and-drop media organization
+- Improve search and filtering across mood spaces and library items
+- Add more advanced community features such as following users or sharing collections
+- Deploy the full application with production-ready environment settings
+
+---
+
 ## Author
 
-Ayse Sule — Full-stack development, UI/UX design, authentication, CRUD, file uploads, deployment.
+Ayse Sule Ekiz
+
