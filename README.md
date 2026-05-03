@@ -1,3 +1,13 @@
+<p align="center">
+  <img src="src/assets/logos/light-reverie-written-logo.png#gh-light-mode-only" height="80" alt="Reverie" />
+  <img src="src/assets/logos/dark-reverie-written-logo.png#gh-dark-mode-only" height="80" alt="Reverie" />
+</p>
+
+<p align="center">
+  <img src="src/assets/logos/light-reverie-logo.png#gh-light-mode-only" height="60" alt="Reverie icon" />
+  <img src="src/assets/logos/dark-reverie-logo.png#gh-dark-mode-only" height="60" alt="Reverie icon" />
+</p>
+
 # Reverie Web App
 
 ## Description
@@ -43,6 +53,60 @@ Reverie is a mood space and memory curation web application where users can crea
 - Profile management with photo upload
 - Light and dark mode
 - Responsive layout (desktop sidebar + mobile hamburger nav)
+
+---
+
+## Screenshots
+
+### Landing Page
+
+<img src="public/screenshots/Screenshot 1 - Home Screen 1.png" width="100%" alt="Landing page hero" />
+
+<table>
+  <tr>
+    <td width="50%"><img src="public/screenshots/Screenshot 2 - Home Screen 2.png" alt="Landing page — How It Works" width="100%" /></td>
+    <td width="50%"><img src="public/screenshots/Screenshot 3 - Home Screen 3.png" alt="Landing page — Public moodboards" width="100%" /></td>
+  </tr>
+</table>
+
+### Authentication
+
+<img src="public/screenshots/Screenshot 4 - Sign Up Screen.png" width="100%" alt="Sign Up screen" />
+
+### My Spaces (Dashboard)
+
+<img src="public/screenshots/Screenshot 5 - My Spaces.png" width="100%" alt="Dashboard — My Spaces" />
+
+### Community
+
+<img src="public/screenshots/Screenshot 6 - Community.png" width="100%" alt="Community page" />
+
+### Saved Spaces & Timeline
+
+<table>
+  <tr>
+    <td width="50%"><img src="public/screenshots/Screenshot 7 - Saved.png" alt="Saved Spaces" width="100%" /></td>
+    <td width="50%"><img src="public/screenshots/Screenshot 8 - Timeline.png" alt="Mood Timeline" width="100%" /></td>
+  </tr>
+</table>
+
+### Library & Create New
+
+<table>
+  <tr>
+    <td width="50%"><img src="public/screenshots/Screenshot 9 - Library.png" alt="Personal Media Library" width="100%" /></td>
+    <td width="50%"><img src="public/screenshots/Screenshot 10 - Create New.png" alt="Create New Mood Space" width="100%" /></td>
+  </tr>
+</table>
+
+### Profile & Database
+
+<table>
+  <tr>
+    <td width="50%"><img src="public/screenshots/Screenshot 11 - Profile.png" alt="Profile page" width="100%" /></td>
+    <td width="50%"><img src="public/screenshots/Screenshot 12 - MongoDB Dataview.png" alt="MongoDB Atlas data view" width="100%" /></td>
+  </tr>
+</table>
 
 ---
 
